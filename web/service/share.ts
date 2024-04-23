@@ -11,6 +11,7 @@ import type {
   ConversationItem,
 } from '@/models/share'
 import type { ChatConfig } from '@/app/components/base/chat/types'
+import type { EnterpriseFeatures } from '@/types/enterprise'
 
 function getAction(action: 'get' | 'post' | 'del' | 'patch', isInstalledApp: boolean) {
   switch (action) {
@@ -131,6 +132,18 @@ export const fetchAppParams = async (isInstalledApp: boolean, installedAppId = '
   return (getAction('get', isInstalledApp))(getUrl('parameters', isInstalledApp, installedAppId)) as Promise<ChatConfig>
 }
 
+export const fetchEnterpriseFeatures = async () => {
+  return (getAction('get', false))(getUrl('enterprise-features', false, '')) as Promise<EnterpriseFeatures>
+}
+
+export const fetchWebSAMLSSOUrl = async () => {
+  return (getAction('get', false))(getUrl('/enterprise/sso/saml/login-features', false, '')) as Promise<{ url: string }>
+}
+
+export const fetchWebOIDCSSOUrl = async () => {
+  return (getAction('get', false))(getUrl('/enterprise/sso/oidc/login', false, '')) as Promise<{ url: string; state: string }>
+}
+
 export const fetchAppMeta = async (isInstalledApp: boolean, installedAppId = '') => {
   return (getAction('get', isInstalledApp))(getUrl('meta', isInstalledApp, installedAppId)) as Promise<AppMeta>
 }
@@ -171,8 +184,9 @@ export const textToAudio = (url: string, isPublicAPI: boolean, body: FormData) =
   return (getAction('post', !isPublicAPI))(url, { body }, { bodyStringify: false, deleteContentType: true }) as Promise<{ data: string }>
 }
 
-export const fetchAccessToken = async (appCode: string) => {
+export const fetchAccessToken = async (appCode: string, webSSOToken: string) => {
   const headers = new Headers()
   headers.append('X-App-Code', appCode)
+  headers.append('X-Web-SSO-Token', webSSOToken)
   return get('/passport', { headers }) as Promise<{ access_token: string }>
 }
