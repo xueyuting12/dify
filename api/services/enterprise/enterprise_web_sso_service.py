@@ -19,7 +19,7 @@ class EnterpriseWebSSOService:
             logger.exception(response)
             raise Exception('email not found in SAML response: ' + response)
 
-        return ""
+        return cls.generate_web_sso_token(response.get('email'))
 
     @classmethod
     def get_sso_oidc_login(cls):
@@ -27,12 +27,7 @@ class EnterpriseWebSSOService:
 
     @classmethod
     def get_sso_oidc_callback(cls, args: dict):
-        state_from_query = args['state']
         code_from_query = args['code']
-        state_from_cookies = args['web-oidc-state']
-
-        if state_from_cookies != state_from_query:
-            raise Exception('invalid state or code')
 
         response = EnterpriseRequest.send_request('GET', '/sso/web/oidc/callback', params={'code': code_from_query})
         if 'email' not in response or response['email'] is None or response['email'] == '':

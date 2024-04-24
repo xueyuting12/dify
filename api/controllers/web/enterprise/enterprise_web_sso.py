@@ -36,9 +36,7 @@ class EnterpriseWebSSOOidcCallback(Resource):
 
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('state', type=str, required=True, location='args')
         parser.add_argument('code', type=str, required=True, location='args')
-        parser.add_argument('web-oidc-state', type=str, required=True, location='cookies')
         args = parser.parse_args()
 
         try:
