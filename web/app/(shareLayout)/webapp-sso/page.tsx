@@ -51,7 +51,6 @@ const EnterpriseWebSSOForm: FC = () => {
     }
     else {
       fetchWebOIDCSSOUrl().then((res) => {
-        document.cookie = `web-oidc-state=${res.state}; path=/`
         router.push(res.url)
       }).finally(() => {
         setIsLoading(false)
