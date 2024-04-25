@@ -10,7 +10,7 @@ import { fetchWebOIDCSSOUrl, fetchWebSAMLSSOUrl } from '@/service/share'
 
 const EnterpriseWebSSOForm: FC = () => {
   const searchParams = useSearchParams()
-  const protocol = searchParams.get('protocol')
+  const protocal = searchParams.get('protocal')
   const webSSOTokenFromUrl = searchParams.get('web_sso_token')
   const message = searchParams.get('message')
 
@@ -42,19 +42,26 @@ const EnterpriseWebSSOForm: FC = () => {
 
   const handleSSOLogin = () => {
     setIsLoading(true)
-    if (protocol === 'saml') {
+    if (protocal === 'saml') {
       fetchWebSAMLSSOUrl().then((res) => {
         router.push(res.url)
       }).finally(() => {
         setIsLoading(false)
       })
     }
-    else {
+    else if (protocal === 'oidc') {
       fetchWebOIDCSSOUrl().then((res) => {
         router.push(res.url)
       }).finally(() => {
         setIsLoading(false)
       })
+    }
+    else {
+      Toast.notify({
+        type: 'error',
+        message: 'Invalid SSO protocal',
+      })
+      setIsLoading(false)
     }
   }
 

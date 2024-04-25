@@ -5,6 +5,7 @@ from flask_restful import Resource
 from werkzeug.exceptions import NotFound, Unauthorized
 
 from controllers.web import api
+from controllers.web.error import WebSSOTokenInvalidError
 from extensions.ext_database import db
 from libs.passport import PassportService
 from models.model import App, EndUser, Site
@@ -20,10 +21,12 @@ class PassportResource(Resource):
         if enterprise_features.sso_enforced_for_web:
             web_sso_token = request.headers.get('X-Web-SSO-Token')
             if not web_sso_token:
-                raise Unauthorized('X-Web-SSO-Token header is missing.')
-
-            web_sso_token_decode = PassportService().verify(web_sso_token)
-            end_user_session_id = web_sso_token_decode.get('end_user_session_id')
+                raise WebSSOTokenInvalidError()
+            try:
+                web_sso_token_decode = PassportService().verify(web_sso_token)
+                end_user_session_id = web_sso_token_decode.get('end_user_session_id')
+            except Unauthorized:
+                raise WebSSOTokenInvalidError()
 
         app_code = request.headers.get('X-App-Code')
         if app_code is None:

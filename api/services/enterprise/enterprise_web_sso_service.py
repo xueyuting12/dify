@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta, timezone
 
 from libs.passport import PassportService
 from services.enterprise.base import EnterpriseRequest
@@ -40,6 +41,7 @@ class EnterpriseWebSSOService:
     def generate_web_sso_token(cls, end_user_session_id: str) -> str:
         payload = {
             'end_user_session_id': end_user_session_id,
+            "exp": (datetime.now(timezone.utc) + timedelta(days=7)).timestamp(),
         }
 
         token = PassportService().issue(payload)

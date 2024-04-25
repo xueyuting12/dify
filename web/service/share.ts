@@ -184,9 +184,8 @@ export const textToAudio = (url: string, isPublicAPI: boolean, body: FormData) =
   return (getAction('post', !isPublicAPI))(url, { body }, { bodyStringify: false, deleteContentType: true }) as Promise<{ data: string }>
 }
 
-export const fetchAccessToken = async (appCode: string, webSSOToken: string) => {
+export const fetchAccessToken = async (appCode: string) => {
   const headers = new Headers()
   headers.append('X-App-Code', appCode)
-  headers.append('X-Web-SSO-Token', webSSOToken)
   return get('/passport', { headers }) as Promise<{ access_token: string }>
 }
