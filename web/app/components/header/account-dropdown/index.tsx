@@ -3,20 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Fragment, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useContext } from 'use-context-selector'
-import classNames from 'classnames'
-import Link from 'next/link'
 import { Menu, Transition } from '@headlessui/react'
-import Indicator from '../indicator'
 import AccountAbout from '../account-about'
 import WorkplaceSelector from './workplace-selector'
 import I18n from '@/context/i18n'
 import Avatar from '@/app/components/base/avatar'
 import { logout } from '@/service/common'
 import { useAppContext } from '@/context/app-context'
-import { ArrowUpRight, ChevronDown } from '@/app/components/base/icons/src/vender/line/arrows'
+import { ChevronDown } from '@/app/components/base/icons/src/vender/line/arrows'
 import { LogOut01 } from '@/app/components/base/icons/src/vender/line/general'
 import { useModalContext } from '@/context/modal-context'
-import { LanguagesSupported } from '@/i18n/language'
 export type IAppSelecotr = {
   isMobile: boolean
 }
@@ -39,10 +35,6 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
       url: '/logout',
       params: {},
     })
-
-    if (localStorage?.getItem('console_token'))
-      localStorage.removeItem('console_token')
-
     router.push('/signin')
   }
 
@@ -104,10 +96,10 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
                         <div>{t('common.userProfile.settings')}</div>
                       </div>
                     </Menu.Item>
-                    <Menu.Item>
+                    {/* <Menu.Item>
                       <Link
                         className={classNames(itemClassName, 'group justify-between')}
-                        href='https://github.com/langgenius/dify/discussions/categories/feedbacks'
+                        href='https://feedback.dify.ai/'
                         target='_blank' rel='noopener noreferrer'>
                         <div>{t('common.userProfile.roadmapAndFeedback')}</div>
                         <ArrowUpRight className='hidden w-[14px] h-[14px] text-gray-500 group-hover:flex' />
@@ -132,8 +124,8 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
                         <div>{t('common.userProfile.helpCenter')}</div>
                         <ArrowUpRight className='hidden w-[14px] h-[14px] text-gray-500 group-hover:flex' />
                       </Link>
-                    </Menu.Item>
-                    {
+                    </Menu.Item> */}
+                    {/* {
                       document?.body?.getAttribute('data-public-site-about') !== 'hide' && (
                         <Menu.Item>
                           <div className={classNames(itemClassName, 'justify-between')} onClick={() => setAboutVisible(true)}>
@@ -145,7 +137,7 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
                           </div>
                         </Menu.Item>
                       )
-                    }
+                    } */}
                   </div>
                   <Menu.Item>
                     <div className='p-1' onClick={() => handleLogout()}>

@@ -1,0 +1,39 @@
+.blockContainer {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 20px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.blockContainer:hover {
+    background: #F4F6F8;
+}
+
+.commonIcon {
+    width: 30px;
+    height: 30px;
+    background-size: 100% 100%;
+    margin-right: 10px;
+    border-radius: 5px;
+
+}
+
+.start {
+    background-image: url('../../../assets/icon-start.png');
+}
+.common {
+    background-image: url('../../../assets/icon-common.png');
+}
+.condition {
+    background-image: url('../../../assets/icon-condition.png');
+}
+.output {
+    background-image: url('../../../assets/icon-output.png');
+}
+
+.agentName {
+    display: flex;
+    font-size: 14px;
+    flex: 1;
+}

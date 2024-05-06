@@ -113,6 +113,7 @@ const translation = {
     newApp: '新しいアプリ',
     newDataset: 'ナレッジの作成',
     tools: 'ツール',
+    schedule: '编排',
   },
   userProfile: {
     settings: '設定',

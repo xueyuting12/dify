@@ -25,6 +25,8 @@ else {
   // const env = domainParts.length === 2 ? 'ai' : domainParts?.[0];
   apiPrefix = 'http://localhost:5001/console/api'
   publicApiPrefix = 'http://localhost:5001/api' // avoid browser private mode api cross origin
+  // apiPrefix = 'http://10.118.71.151:5001/console/api'
+  // publicApiPrefix = 'http://10.118.71.151:5001/api'
 }
 
 export const API_PREFIX: string = apiPrefix

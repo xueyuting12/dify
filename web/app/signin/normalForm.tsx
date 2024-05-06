@@ -4,9 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/navigation'
 import classNames from 'classnames'
 import useSWR from 'swr'
-import Link from 'next/link'
 import { useContext } from 'use-context-selector'
-import Toast from '../components/base/toast'
 import style from './page.module.css'
 import { IS_CE_EDITION, apiPrefix } from '@/config'
 import Button from '@/app/components/base/button'
@@ -74,39 +72,30 @@ const NormalForm = () => {
   })
 
   const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const [isLoading, setIsLoading] = useState(false)
   const handleEmailPasswordLogin = async () => {
-    if (!validEmailReg.test(email)) {
-      Toast.notify({
-        type: 'error',
-        message: t('login.error.emailInValid'),
-      })
-      return
-    }
+    // if (!validEmailReg.test(username)) {
+    //   Toast.notify({
+    //     type: 'error',
+    //     message: t('login.error.emailInValid'),
+    //   })
+    //   return
+    // }
     try {
       setIsLoading(true)
       const res = await login({
         url: '/login',
         body: {
-          email,
+          email: username,
           password,
           remember_me: true,
         },
       })
-
-      if (res.result === 'success') {
-        localStorage.setItem('console_token', res.data)
-        router.replace('/apps')
-      }
-      else {
-        Toast.notify({
-          type: 'error',
-          message: res.data,
-        })
-      }
+      localStorage.setItem('console_token', res.data)
+      router.replace('/apps')
     }
     finally {
       setIsLoading(false)
@@ -149,7 +138,6 @@ const NormalForm = () => {
     <>
       <div className="w-full mx-auto">
         <h2 className="text-[32px] font-bold text-gray-900">{t('login.pageTitle')}</h2>
-        <p className='mt-1 text-sm text-gray-600'>{t('login.welcome')}</p>
       </div>
 
       <div className="w-full mx-auto mt-8">
@@ -210,16 +198,16 @@ const NormalForm = () => {
 
               <form onSubmit={() => { }}>
                 <div className='mb-5'>
-                  <label htmlFor="email" className="my-2 block text-sm font-medium text-gray-900">
+                  <label htmlFor="username" className="my-2 block text-sm font-medium text-gray-900">
                     {t('login.email')}
                   </label>
                   <div className="mt-1">
                     <input
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      id="email"
-                      type="email"
-                      autoComplete="email"
+                      value={username}
+                      onChange={e => setUsername(e.target.value)}
+                      id="username"
+                      type="username"
+                      autoComplete="username"
                       placeholder={t('login.emailPlaceholder') || ''}
                       className={'appearance-none block w-full rounded-lg pl-[14px] px-3 py-2 border border-gray-200 hover:border-gray-300 hover:shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 placeholder-gray-400 caret-primary-600 sm:text-sm'}
                     />
@@ -283,23 +271,6 @@ const NormalForm = () => {
               </form>
             </>
           }
-          {/*  agree to our Terms and Privacy Policy. */}
-          <div className="w-hull text-center block mt-2 text-xs text-gray-600">
-            {t('login.tosDesc')}
-            &nbsp;
-            <Link
-              className='text-primary-600'
-              target='_blank' rel='noopener noreferrer'
-              href='https://dify.ai/terms'
-            >{t('login.tos')}</Link>
-            &nbsp;&&nbsp;
-            <Link
-              className='text-primary-600'
-              target='_blank' rel='noopener noreferrer'
-              href='https://dify.ai/privacy'
-            >{t('login.pp')}</Link>
-          </div>
-
         </div>
       </div>
     </>

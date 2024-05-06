@@ -11,6 +11,7 @@ import DatasetNav from './dataset-nav'
 import EnvNav from './env-nav'
 import ExploreNav from './explore-nav'
 import ToolsNav from './tools-nav'
+import ScheduleNav from './schedule-nav'
 import GithubStar from './github-star'
 import { WorkspaceProvider } from '@/context/workspace-context'
 import { useAppContext } from '@/context/app-context'
@@ -56,7 +57,7 @@ const Header = () => {
           <Link href="/apps" className='flex items-center mr-4'>
             <LogoSite className='object-contain' />
           </Link>
-          <GithubStar />
+          {/* <GithubStar /> */}
         </>}
       </div>
       {isMobile && (
@@ -73,6 +74,7 @@ const Header = () => {
           <AppNav />
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
+          <ScheduleNav className={navClassName}/>
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
@@ -100,6 +102,7 @@ const Header = () => {
           <AppNav />
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
+          <ScheduleNav className={navClassName}/>
         </div>
       )}
     </div>

@@ -1,0 +1,56 @@
+.customeBtn {
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 4px;
+}
+.btnContainer {
+  display: flex;
+  padding: 4px 6px;
+  align-items: center;
+}
+.intoBtn {
+  background-image: url('./assets//icon-btn-1.png');
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.outBtn {
+  background-image: url('./assets//icon-btn-2.png');
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.scanBtn {
+  background-image: url('./assets//icon-btn-4.png');
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.saveBtn {
+  background-image: url('./assets//icon-btn-3.png');
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.publishBtn {
+  margin-left: 10px;
+  cursor: pointer;
+  color: #3370ff;
+  font-size: 14px;
+  border: 1px solid #3370ff;
+  padding:  2px 4px;
+  border-radius: 6px;
+}
+.versionBtn {
+  min-width: 35px;
+  height: 35px;
+  margin-right: 2px;
+}

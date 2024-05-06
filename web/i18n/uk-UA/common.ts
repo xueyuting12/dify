@@ -113,6 +113,7 @@ const translation = {
     newApp: 'Нова програма',
     newDataset: 'Створити знання',
     tools: 'Інструменти',
+    schedule: '编排',
   },
   userProfile: {
     settings: 'Налаштування',

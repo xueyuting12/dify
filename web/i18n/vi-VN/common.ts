@@ -113,6 +113,7 @@ const translation = {
     newApp: 'Ứng dụng mới',
     newDataset: 'Tạo Kiến thức',
     tools: 'Công cụ',
+    schedule: '编排',
   },
   userProfile: {
     settings: 'Cài đặt',

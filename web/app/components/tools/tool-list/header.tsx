@@ -40,7 +40,6 @@ const Header: FC<Props> = ({
           <div className='flex items-center h-6 space-x-1'>
             <div className={cn(isInDebugPage && 'truncate', 'text-base font-semibold text-gray-900')}>{collection.label[language]}</div>
             <div className='text-xs font-normal text-gray-500'>·</div>
-            <div className='text-xs font-normal text-gray-500'>{t('tools.author')}&nbsp;{collection.author}</div>
           </div>
           {collection.description && (
             <div className={cn('leading-[18px] text-[13px] font-normal text-gray-500')}>

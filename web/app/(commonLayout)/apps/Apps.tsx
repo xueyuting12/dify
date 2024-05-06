@@ -74,7 +74,7 @@ const Apps = () => {
   ]
 
   useEffect(() => {
-    document.title = `${t('common.menus.apps')} -  Dify`
+    document.title = `${t('common.menus.apps')} -  纽带星云`
     if (localStorage.getItem(NEED_REFRESH_APP_LIST_KEY) === '1') {
       localStorage.removeItem(NEED_REFRESH_APP_LIST_KEY)
       mutate()

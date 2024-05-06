@@ -113,6 +113,7 @@ const translation = {
     newApp: 'New App',
     newDataset: 'Create Knowledge',
     tools: 'Tools',
+    schedule: 'Schedule',
   },
   userProfile: {
     settings: 'Settings',
