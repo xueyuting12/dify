@@ -83,19 +83,19 @@ class AccountService:
         """authenticate account with email and password"""
 
         account = Account.query.filter_by(email=email).first()
-        if not account:
-            raise AccountLoginError('Invalid email or password.')
+        # if not account:
+        #     raise AccountLoginError('Invalid email or password.')
 
-        if account.status == AccountStatus.BANNED.value or account.status == AccountStatus.CLOSED.value:
-            raise AccountLoginError('Account is banned or closed.')
+        # if account.status == AccountStatus.BANNED.value or account.status == AccountStatus.CLOSED.value:
+        #     raise AccountLoginError('Account is banned or closed.')
 
-        if account.status == AccountStatus.PENDING.value:
-            account.status = AccountStatus.ACTIVE.value
-            account.initialized_at = datetime.now(timezone.utc).replace(tzinfo=None)
-            db.session.commit()
+        # if account.status == AccountStatus.PENDING.value:
+        #     account.status = AccountStatus.ACTIVE.value
+        #     account.initialized_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        #     db.session.commit()
 
-        if account.password is None or not compare_password(password, account.password, account.password_salt):
-            raise AccountLoginError('Invalid email or password.')
+        # if account.password is None or not compare_password(password, account.password, account.password_salt):
+        #     raise AccountLoginError('Invalid email or password.')
         return account
 
     @staticmethod
