@@ -71,3 +71,9 @@ class InvalidMetadataError(BaseHTTPException):
     error_code = 'invalid_metadata'
     description = "The metadata content is incorrect. Please check and verify."
     code = 400
+
+
+class AgentFlowNameDuplicateError(BaseHTTPException):
+    error_code = 'agent_flow_name_duplicate'
+    description = "The agent flow name already exists. Please modify your agent flow name."
+    code = 409
