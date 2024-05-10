@@ -89,7 +89,7 @@ const NormalForm = () => {
       const res = await login({
         url: '/login',
         body: {
-          email: username,
+          username: username,
           password,
           remember_me: true,
         },
