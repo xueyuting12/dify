@@ -86,7 +86,8 @@ const TaskSchedule: FC<IProps> = () => {
         type: agent_type,
         position,
         data: {
-          label: agent_name,
+          // label: agent_name,
+          label: (multi_version && multi_version[0]) ? multi_version[0].agent_chinese_name : agent_name,
           version: current_version,
           conditionMapping: multi_version?.find(item => item.version === current_version)?.condition_mapping,
           className: class_name,
