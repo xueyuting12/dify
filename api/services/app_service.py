@@ -133,8 +133,7 @@ class AppService:
             db.session.flush()
 
             app.app_model_config_id = app_model_config.id
-
-        if app_mode == "custom-agent":
+        if app_mode.value == "custom-agent":
             api_agent_id = args["api_agent_id"]
             api_agent_app = ApiAgentApp(api_agent_id=api_agent_id, app_id=app.id)
             db.session.add(api_agent_app)

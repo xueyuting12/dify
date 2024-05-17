@@ -82,5 +82,21 @@ default_app_templates = {
                 "completion_params": {}
             }
         }
+    },
+    # agent-chat default mode
+    AppMode.CUSTOM_AGENT: {
+        'app': {
+            'mode': AppMode.CUSTOM_AGENT.value,
+            'enable_site': True,
+            'enable_api': True
+        },
+        'model_config': {
+            'model': {
+                "provider": "openai",
+                "name": "gpt-4",
+                "mode": "chat",
+                "completion_params": {}
+            }
+        }
     }
 }
