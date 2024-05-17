@@ -34,6 +34,9 @@ export type AgentFlowVersionResponse = {
 export type IAgentMultiVersion = {
   version?: string
   condition_mapping?: { name: string }[]
+  id: String
+  desc: String
+  agent_chinese_name: String
 }
 
 export type Agent = {
