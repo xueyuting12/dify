@@ -19,7 +19,8 @@ const Block = ({ data, handleSelectVersion }: IProps) => {
     event.dataTransfer.effectAllowed = 'move'
   }
   const options = data?.multi_version?.map(v => ({ value: v.version || '', text: v.version || '' })).filter(f => f.value) || []
-  const agentName = data.current_version ? `${data.agent_name}_${data.current_version}` : `${data.agent_name}`
+  // const agentName = data.current_version ? `${data.agent_name}_${data.current_version}` : `${data.agent_name}`
+  const agentChineseName = data.current_version ? `${(data.multi_version) ? data.multi_version[0].agent_chinese_name : data.agent_name}_${data.current_version}` : `${(data.multi_version) ? data.multi_version[0].agent_chinese_name : data.agent_name}`
   const handleDropSelect = (item: Item) => {
     handleSelectVersion?.(data.agent_name, item.value as string)
   }
@@ -30,7 +31,8 @@ const Block = ({ data, handleSelectVersion }: IProps) => {
       draggable
     >
       <div className={classNames(styles[getType(data.agent_type)], styles.commonIcon)}/>
-      <span className={styles.agentName}>{agentName}</span>
+      {/* <span className={styles.agentName}>{agentName}</span> */}
+      <span className={styles.agentName}>{agentChineseName}</span>
       {options.length > 1 && <Dropdown
         items={options}
         onSelect={handleDropSelect}
