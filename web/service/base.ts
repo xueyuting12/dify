@@ -38,7 +38,7 @@ export type IOnDataMoreInfo = {
   errorCode?: string
 }
 
-export type IOnData = (message: string, isFirstMessage: boolean, moreInfo: IOnDataMoreInfo) => void
+export type IOnData = (message: string, isFirstMessage: boolean, moreInfo: IOnDataMoreInfo, quoteList?: any) => void
 export type IOnThought = (though: ThoughtItem) => void
 export type IOnFile = (file: VisionFile) => void
 export type IOnMessageEnd = (messageEnd: MessageEnd) => void
@@ -136,12 +136,13 @@ const handleStream = (
         return
       }
       buffer += decoder.decode(result.value, { stream: true })
-      const lines = buffer.split('\n')
+      const lines = buffer.split('\n\n')
       try {
         lines.forEach((message) => {
           if (message.startsWith('data: ')) { // check if it starts with data:
             try {
               bufferObj = JSON.parse(message.substring(6)) as Record<string, any>// remove data: and parse as json
+              console.log(bufferObj)
             }
             catch (e) {
               // mute handle message cut off
@@ -170,6 +171,20 @@ const handleStream = (
                 messageId: bufferObj.id,
               })
               isFirstMessage = false
+            }
+            else if (bufferObj.event === 'quote') {
+              console.log('quote', bufferObj)
+              if (bufferObj.documentList.length) {
+                onData('', isFirstMessage, {
+                  conversationId: bufferObj.conversation_id,
+                  taskId: bufferObj.task_id,
+                  messageId: bufferObj.id,
+                }, {  
+                  quoteList: bufferObj.documentList,
+                  cost: bufferObj.cost
+                })
+                isFirstMessage = false
+              }
             }
             else if (bufferObj.event === 'agent_thought') {
               onThought?.(bufferObj as ThoughtItem)
@@ -461,7 +476,11 @@ export const ssePost = (
   const { body } = options
   if (body)
     options.body = JSON.stringify(body)
+  // options.body = JSON.stringify({
+  //   "input": "推荐1个东莞的优质渠道商家"
+  // })
 
+  // globalThis.fetch('http://10.118.36.211:3003/api/event-stream', { method: 'POST' })
   globalThis.fetch(urlWithPrefix, options as RequestInit)
     .then((res) => {
       if (!/^(2|3)\d{2}$/.test(String(res.status))) {
@@ -471,14 +490,14 @@ export const ssePost = (
         onError?.('Server Error')
         return
       }
-      return handleStream(res, (str: string, isFirstMessage: boolean, moreInfo: IOnDataMoreInfo) => {
+      return handleStream(res, (str: string, isFirstMessage: boolean, moreInfo: IOnDataMoreInfo, quoteList: []) => {
         if (moreInfo.errorMessage) {
           onError?.(moreInfo.errorMessage, moreInfo.errorCode)
           if (moreInfo.errorMessage !== 'AbortError: The user aborted a request.')
             Toast.notify({ type: 'error', message: moreInfo.errorMessage })
           return
         }
-        onData?.(str, isFirstMessage, moreInfo)
+        onData?.(str, isFirstMessage, moreInfo, quoteList)
       }, onCompleted, onThought, onMessageEnd, onMessageReplace, onFile, onWorkflowStarted, onWorkflowFinished, onNodeStarted, onNodeFinished, onTextChunk, onTextReplace)
     }).catch((e) => {
       if (e.toString() !== 'AbortError: The user aborted a request.')

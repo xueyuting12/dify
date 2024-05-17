@@ -54,6 +54,7 @@ const ChatWrapper = () => {
     appPrevChatList,
     taskId => stopChatMessageResponding('', taskId, isInstalledApp, appId),
   )
+  console.log('chatList', chatList)
 
   useEffect(() => {
     if (currentChatInstanceRef.current)
@@ -76,6 +77,7 @@ const ChatWrapper = () => {
       {
         onGetSuggestedQuestions: responseItemId => fetchSuggestedQuestions(responseItemId, isInstalledApp, appId),
         onConversationComplete: currentConversationId ? undefined : handleNewConversationCompleted,
+        isAutoSaveMessage: true,
         isPublicAPI: !isInstalledApp,
       },
     )

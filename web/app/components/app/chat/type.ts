@@ -86,6 +86,8 @@ export type IChatItem = {
   // for agent log
   conversationId?: string
   input?: any
+  quote_list?: any[]
+  cost?: string
 }
 
 export type MessageEnd = {

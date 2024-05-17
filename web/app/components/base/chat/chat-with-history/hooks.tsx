@@ -109,6 +109,8 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
           isAnswer: true,
           citation: item.retriever_resources,
           message_files: item.message_files?.filter((file: any) => file.belongs_to === 'assistant') || [],
+          quote_list: item.quote_list ? JSON.parse(item.quote_list).quote_list : [],
+          cost: item.quote_list ? JSON.parse(item.quote_list).cost : '0'
         })
       })
     }
