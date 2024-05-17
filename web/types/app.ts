@@ -47,7 +47,7 @@ export type VariableInput = {
 /**
  * App modes
  */
-export const AppModes = ['advanced-chat', 'agent-chat', 'chat', 'completion', 'workflow'] as const
+export const AppModes = ['advanced-chat', 'custom-agent', 'agent-chat', 'chat', 'completion', 'workflow'] as const
 export type AppMode = typeof AppModes[number]
 
 /**
@@ -312,6 +312,8 @@ export type App = {
   /** api site url */
   api_base_url: string
   tags: Tag[]
+  // 自定义Agent
+  api_agent_id?: string
 }
 
 /**

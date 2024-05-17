@@ -1,6 +1,6 @@
 'use client'
 import type { MouseEventHandler } from 'react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import { useRouter } from 'next/navigation'
@@ -10,13 +10,14 @@ import AppsContext, { useAppContext } from '@/context/app-context'
 import { useProviderContext } from '@/context/provider-context'
 import { ToastContext } from '@/app/components/base/toast'
 import type { AppMode } from '@/types/app'
-import { createApp } from '@/service/apps'
+import { createApp, fetchAgentTypes } from '@/service/apps'
 import Modal from '@/app/components/base/modal'
 import Button from '@/app/components/base/button'
+import Select from '@/app/components/base/select'
 import AppIcon from '@/app/components/base/app-icon'
 import EmojiPicker from '@/app/components/base/emoji-picker'
 import AppsFull from '@/app/components/billing/apps-full-in-dialog'
-import { AiText, ChatBot, CuteRobote } from '@/app/components/base/icons/src/vender/solid/communication'
+import { AiText, ChatBot, CuteRobote, CustomRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 import { HelpCircle, XClose } from '@/app/components/base/icons/src/vender/line/general'
 import { Route } from '@/app/components/base/icons/src/vender/solid/mapsAndTravel'
 import TooltipPlus from '@/app/components/base/tooltip-plus'
@@ -41,12 +42,34 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [agentType, setAgentType] = useState('')
+  const [agentTypeArr, setAgentTypeArr] = useState([])
 
   const { plan, enableBilling } = useProviderContext()
   const isAppsFull = (enableBilling && plan.usage.buildApps >= plan.total.buildApps)
   const { isCurrentWorkspaceManager } = useAppContext()
 
   const isCreatingRef = useRef(false)
+
+  const getAgentTypes = async() => {
+    const res = await fetchAgentTypes()
+    const temp = res.data.map((item: any) => {
+      item.value = item.id
+      item.name = item.ai_agent_name
+      return item
+    })
+    temp && setAgentTypeArr(temp)
+  }
+
+  useEffect(() => {
+    getAgentTypes()
+  }, [])
+
+  const onAgentTypeChange = (item: any) => {
+    console.log('agentType', item.value)
+    setAgentType(item.value)
+  }
+
   const onCreate: MouseEventHandler = useCallback(async () => {
     if (!appMode) {
       notify({ type: 'error', message: t('app.newApp.appTypeRequired') })
@@ -54,6 +77,10 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
     }
     if (!name.trim()) {
       notify({ type: 'error', message: t('app.newApp.nameNotEmpty') })
+      return
+    }
+    if (appMode === 'custom-agent' && !agentType) {
+      notify({ type: 'error', message: t('app.newApp.customAgentTypeNotEmpty') })
       return
     }
     if (isCreatingRef.current)
@@ -66,13 +93,14 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
         icon: emoji.icon,
         icon_background: emoji.icon_background,
         mode: appMode,
+        api_agent_id: agentType
       })
       notify({ type: 'success', message: t('app.newApp.appCreated') })
       onSuccess()
       onClose()
       mutateApps()
       localStorage.setItem(NEED_REFRESH_APP_LIST_KEY, '1')
-      getRedirection(isCurrentWorkspaceManager, app, push)
+      appMode !== 'custom-agent' && getRedirection(isCurrentWorkspaceManager, app, push)
     }
     catch (e) {
       notify({ type: 'error', message: t('app.newApp.appCreateFailed') })
@@ -104,7 +132,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
           >
             <div
               className={cn(
-                'relative grow box-border w-[158px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 bg-white text-gray-700 cursor-pointer shadow-xs hover:border-gray-300',
+                'relative grow box-border w-[128px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 bg-white text-gray-700 cursor-pointer shadow-xs hover:border-gray-300',
                 showChatBotType && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
                 s['grid-bg-chat'],
               )}
@@ -127,7 +155,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
           >
             <div
               className={cn(
-                'relative grow box-border w-[158px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
+                'relative grow box-border w-[128px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
                 s['grid-bg-completion'],
                 appMode === 'completion' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
               )}
@@ -148,7 +176,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
           >
             <div
               className={cn(
-                'relative grow box-border w-[158px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
+                'relative grow box-border w-[128px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
                 s['grid-bg-agent-chat'],
                 appMode === 'agent-chat' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
               )}
@@ -161,6 +189,28 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
               <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.agent')}</div>
             </div>
           </TooltipPlus>
+          {/* 内部Agent */}
+          <TooltipPlus
+            hideArrow
+            popupContent={
+              <div className='max-w-[280px] leading-[18px] text-xs text-gray-700'>{t('app.newApp.customAgentDescription')}</div>
+            }
+          >
+            <div
+              className={cn(
+                'relative grow box-border w-[128px] mr-2 px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
+                s['grid-bg-agent-chat'],
+                appMode === 'custom-agent' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
+              )}
+              onClick={() => {
+                setAppMode('custom-agent')
+                setShowChatBotType(false)
+              }}
+            >
+              <CustomRobote className='w-6 h-6 text-rose-600' />
+              <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.customAgent')}</div>
+            </div>
+          </TooltipPlus>
           <TooltipPlus
             hideArrow
             popupContent={
@@ -171,7 +221,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
           >
             <div
               className={cn(
-                'relative grow box-border w-[158px] px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
+                'relative grow box-border w-[128px] px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
                 s['grid-bg-workflow'],
                 appMode === 'workflow' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
               )}
@@ -286,6 +336,22 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
           }}
         />}
       </div>
+      {/* 自定义agent类型 */}
+      {
+        appMode === 'custom-agent' && 
+        <div className='pt-2 px-8'>
+          <div className='py-2 text-sm font-medium leading-[20px] text-gray-900'>{t('app.newApp.customAgentType')}</div>
+          <div className='flex items-center justify-between space-x-2'>
+            <Select
+              allowSearch={false}
+              items={agentTypeArr}
+              onSelect={onAgentTypeChange}
+              placeholder={t('app.newApp.customAgentTypePlaceholder') || ''}
+              className='grow'
+            />
+          </div>
+        </div>
+      }
       {/* description */}
       <div className='pt-2 px-8'>
         <div className='py-2 text-sm font-medium leading-[20px] text-gray-900'>{t('app.newApp.captionDescription')}</div>

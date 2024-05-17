@@ -109,12 +109,13 @@ const SideBar: FC<IExploreSideBarProps> = ({
               height: 'calc(100vh - 250px)',
             }}
           >
-            {installedApps.map(({ id, is_pinned, uninstallable, app: { name, icon, icon_background } }) => {
+            {installedApps.map(({ id, is_pinned, uninstallable, app: { name, icon, icon_background, mode } }) => {
               return (
                 <Item
                   key={id}
                   isMobile={isMobile}
                   name={name}
+                  mode={mode}
                   icon={icon}
                   icon_background={icon_background}
                   id={id}
