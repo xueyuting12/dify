@@ -21,7 +21,7 @@ class ConversationListApi(InstalledAppResource):
     def get(self, installed_app):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         parser = reqparse.RequestParser()
@@ -51,7 +51,7 @@ class ConversationApi(InstalledAppResource):
     def delete(self, installed_app, c_id):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         conversation_id = str(c_id)
@@ -70,7 +70,7 @@ class ConversationRenameApi(InstalledAppResource):
     def post(self, installed_app, c_id):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         conversation_id = str(c_id)
@@ -97,7 +97,7 @@ class ConversationPinApi(InstalledAppResource):
     def patch(self, installed_app, c_id):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         conversation_id = str(c_id)
@@ -114,7 +114,7 @@ class ConversationUnPinApi(InstalledAppResource):
     def patch(self, installed_app, c_id):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         conversation_id = str(c_id)

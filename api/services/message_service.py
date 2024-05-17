@@ -10,7 +10,7 @@ from core.model_runtime.entities.model_entities import ModelType
 from extensions.ext_database import db
 from libs.infinite_scroll_pagination import InfiniteScrollPagination
 from models.account import Account
-from models.model import App, AppMode, AppModelConfig, EndUser, Message, MessageFeedback
+from models.model import App, AppMode, AppModelConfig, EndUser, Message, MessageFeedback, MessageInfo
 from services.conversation_service import ConversationService
 from services.errors.conversation import ConversationCompletedError, ConversationNotExistsError
 from services.errors.message import (
@@ -268,3 +268,30 @@ class MessageService:
         )
 
         return questions
+
+    @staticmethod
+    def get_message_info(message_id):
+        message_obj = db.session.query(Message).filter(
+            Message.id == message_id).first()
+        if message_obj is None:
+            return None
+        else:
+            return message_obj
+
+    @staticmethod
+    def update_message_answer_info(message_id, data):
+        message_obj = MessageService.get_message_info(message_id)
+        message_obj.answer = data["answer"]
+        info_obj = db.session.query(MessageInfo).filter(
+            MessageInfo.message_id == message_id).first()
+        if info_obj:
+            info_obj.quote = data["quote"]
+        else:
+            info_obj = MessageInfo(
+                message_id=message_id,
+                quote=data["quote"],
+                process=""
+            )
+            db.session.add(info_obj)
+        db.session.commit()
+        return message_obj

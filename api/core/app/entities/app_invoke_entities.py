@@ -133,3 +133,10 @@ class WorkflowAppGenerateEntity(AppGenerateEntity):
     """
     # app config
     app_config: WorkflowUIBasedAppConfig
+
+
+class CustomAgentAppGenerateEntity(EasyUIBasedAppGenerateEntity):
+    """
+    Agent Chat Application Generate Entity.
+    """
+    conversation_id: Optional[str] = None

@@ -14,14 +14,15 @@ from core.tools.utils.configuration import ToolParameterConfigurationManager
 from fields.app_fields import (
     app_detail_fields,
     app_detail_fields_with_site,
-    app_pagination_fields,
+    app_pagination_fields, api_agent_pagination_fields, api_agent_partial_fields,
 )
 from libs.login import login_required
 from models.model import App, AppMode, AppModelConfig
+from services.api_agent_service import ApiAgentRegisterService
 from services.app_service import AppService
 from services.tag_service import TagService
 
-ALLOW_CREATE_APP_MODES = ['chat', 'agent-chat', 'advanced-chat', 'workflow', 'completion']
+ALLOW_CREATE_APP_MODES = ['chat', 'agent-chat', 'advanced-chat', 'workflow', 'completion', 'custom-agent']
 
 
 class AppListApi(Resource):
@@ -31,15 +32,18 @@ class AppListApi(Resource):
     @account_initialization_required
     def get(self):
         """Get app list"""
+
         def uuid_list(value):
             try:
                 return [str(uuid.UUID(v)) for v in value.split(',')]
             except ValueError:
                 abort(400, message="Invalid UUID format in tag_ids.")
+
         parser = reqparse.RequestParser()
         parser.add_argument('page', type=inputs.int_range(1, 99999), required=False, default=1, location='args')
         parser.add_argument('limit', type=inputs.int_range(1, 100), required=False, default=20, location='args')
-        parser.add_argument('mode', type=str, choices=['chat', 'workflow', 'agent-chat', 'channel', 'all'], default='all', location='args', required=False)
+        parser.add_argument('mode', type=str, choices=['chat', 'workflow', 'agent-chat', 'channel', 'all'],
+                            default='all', location='args', required=False)
         parser.add_argument('name', type=str, location='args', required=False)
         parser.add_argument('tag_ids', type=uuid_list, location='args', required=False)
 
@@ -66,6 +70,7 @@ class AppListApi(Resource):
         parser.add_argument('mode', type=str, choices=ALLOW_CREATE_APP_MODES, location='json')
         parser.add_argument('icon', type=str, location='json')
         parser.add_argument('icon_background', type=str, location='json')
+        parser.add_argument('api_agent_id', type=str, location='json')
         args = parser.parse_args()
 
         # The role of the current user in the ta table must be admin or owner
@@ -265,6 +270,43 @@ class AppApiStatus(Resource):
         return app_model
 
 
+class ApiAgentListApi(Resource):
+
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def get(self):
+        """Get app list"""
+        parser = reqparse.RequestParser()
+        parser.add_argument('page', type=inputs.int_range(1, 99999), required=False, default=1, location='args')
+        parser.add_argument('limit', type=inputs.int_range(1, 100), required=False, default=20, location='args')
+
+        args = parser.parse_args()
+
+        api_agent_pagination = ApiAgentRegisterService.get_paginate_api_agent(args)
+        if not api_agent_pagination:
+            return {'data': [], 'total': 0, 'page': 1, 'limit': 20, 'has_more': False}
+
+        return marshal(api_agent_pagination, api_agent_pagination_fields)
+
+    @setup_required
+    @login_required
+    @account_initialization_required
+    @marshal_with(api_agent_partial_fields)
+    def post(self):
+        """Create app"""
+        parser = reqparse.RequestParser()
+        parser.add_argument('ai_agent_name', type=str, required=True, location='json')
+        parser.add_argument('desc', type=str, location='json')
+        parser.add_argument('host', type=str, location='json')
+        parser.add_argument('url', type=str, location='json')
+        args = parser.parse_args()
+
+        app = ApiAgentRegisterService.create_app(args)
+
+        return app, 201
+
+
 api.add_resource(AppListApi, '/apps')
 api.add_resource(AppImportApi, '/apps/import')
 api.add_resource(AppApi, '/apps/<uuid:app_id>')
@@ -274,3 +316,4 @@ api.add_resource(AppNameApi, '/apps/<uuid:app_id>/name')
 api.add_resource(AppIconApi, '/apps/<uuid:app_id>/icon')
 api.add_resource(AppSiteStatus, '/apps/<uuid:app_id>/site-enable')
 api.add_resource(AppApiStatus, '/apps/<uuid:app_id>/api-enable')
+api.add_resource(ApiAgentListApi, '/apps/api-agent')
