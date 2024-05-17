@@ -80,7 +80,6 @@ app_partial_fields = {
     'tags': fields.List(fields.Nested(tag_fields))
 }
 
-
 app_pagination_fields = {
     'page': fields.Integer,
     'limit': fields.Integer(attribute='per_page'),
@@ -148,4 +147,20 @@ app_site_fields = {
     'privacy_policy': fields.String,
     'customize_token_strategy': fields.String,
     'prompt_public': fields.Boolean
+}
+
+api_agent_partial_fields = {
+    'id': fields.String,
+    'ai_agent_name': fields.String,
+    'desc': fields.String(attribute='desc_or_prompt'),
+    'host': fields.String,
+    'url': fields.String,
+}
+
+api_agent_pagination_fields = {
+    'page': fields.Integer,
+    'limit': fields.Integer(attribute='per_page'),
+    'total': fields.Integer,
+    'has_more': fields.Boolean(attribute='has_next'),
+    'data': fields.List(fields.Nested(api_agent_partial_fields), attribute='items')
 }

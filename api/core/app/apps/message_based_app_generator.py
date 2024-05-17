@@ -14,7 +14,7 @@ from core.app.entities.app_invoke_entities import (
     AppGenerateEntity,
     ChatAppGenerateEntity,
     CompletionAppGenerateEntity,
-    InvokeFrom,
+    InvokeFrom, CustomAgentAppGenerateEntity,
 )
 from core.app.entities.task_entities import (
     ChatbotAppBlockingResponse,
@@ -39,7 +39,8 @@ class MessageBasedAppGenerator(BaseAppGenerator):
         ChatAppGenerateEntity,
         CompletionAppGenerateEntity,
         AgentChatAppGenerateEntity,
-        AdvancedChatAppGenerateEntity
+        AdvancedChatAppGenerateEntity,
+        CustomAgentAppGenerateEntity
     ],
                          queue_manager: AppQueueManager,
                          conversation: Conversation,
@@ -130,7 +131,8 @@ class MessageBasedAppGenerator(BaseAppGenerator):
                                    ChatAppGenerateEntity,
                                    CompletionAppGenerateEntity,
                                    AgentChatAppGenerateEntity,
-                                   AdvancedChatAppGenerateEntity
+                                   AdvancedChatAppGenerateEntity,
+                                   CustomAgentAppGenerateEntity
                                ],
                                conversation: Optional[Conversation] = None) \
             -> tuple[Conversation, Message]:

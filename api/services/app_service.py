@@ -19,7 +19,7 @@ from core.tools.utils.configuration import ToolParameterConfigurationManager
 from events.app_event import app_model_config_was_updated, app_was_created, app_was_deleted
 from extensions.ext_database import db
 from models.account import Account
-from models.model import App, AppMode, AppModelConfig
+from models.model import App, AppMode, AppModelConfig, ApiAgentApp
 from models.tools import ApiToolProvider
 from services.tag_service import TagService
 from services.workflow_service import WorkflowService
@@ -133,6 +133,11 @@ class AppService:
             db.session.flush()
 
             app.app_model_config_id = app_model_config.id
+
+        if app_mode == "custom-agent":
+            api_agent_id = args["api_agent_id"]
+            api_agent_app = ApiAgentApp(api_agent_id=api_agent_id, app_id=app.id)
+            db.session.add(api_agent_app)
 
         db.session.commit()
 

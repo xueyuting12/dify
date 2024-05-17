@@ -97,7 +97,7 @@ class ChatApi(InstalledAppResource):
     def post(self, installed_app):
         app_model = installed_app.app
         app_mode = AppMode.value_of(app_model.mode)
-        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT]:
+        if app_mode not in [AppMode.CHAT, AppMode.AGENT_CHAT, AppMode.ADVANCED_CHAT, AppMode.CUSTOM_AGENT]:
             raise NotChatAppError()
 
         parser = reqparse.RequestParser()
@@ -157,7 +157,11 @@ class ChatStopApi(InstalledAppResource):
         return {'result': 'success'}, 200
 
 
-api.add_resource(CompletionApi, '/installed-apps/<uuid:installed_app_id>/completion-messages', endpoint='installed_app_completion')
-api.add_resource(CompletionStopApi, '/installed-apps/<uuid:installed_app_id>/completion-messages/<string:task_id>/stop', endpoint='installed_app_stop_completion')
-api.add_resource(ChatApi, '/installed-apps/<uuid:installed_app_id>/chat-messages', endpoint='installed_app_chat_completion')
-api.add_resource(ChatStopApi, '/installed-apps/<uuid:installed_app_id>/chat-messages/<string:task_id>/stop', endpoint='installed_app_stop_chat_completion')
+api.add_resource(CompletionApi, '/installed-apps/<uuid:installed_app_id>/completion-messages',
+                 endpoint='installed_app_completion')
+api.add_resource(CompletionStopApi, '/installed-apps/<uuid:installed_app_id>/completion-messages/<string:task_id>/stop',
+                 endpoint='installed_app_stop_completion')
+api.add_resource(ChatApi, '/installed-apps/<uuid:installed_app_id>/chat-messages',
+                 endpoint='installed_app_chat_completion')
+api.add_resource(ChatStopApi, '/installed-apps/<uuid:installed_app_id>/chat-messages/<string:task_id>/stop',
+                 endpoint='installed_app_stop_chat_completion')

@@ -5,6 +5,7 @@ from core.app.apps.advanced_chat.app_generator import AdvancedChatAppGenerator
 from core.app.apps.agent_chat.app_generator import AgentChatAppGenerator
 from core.app.apps.chat.app_generator import ChatAppGenerator
 from core.app.apps.completion.app_generator import CompletionAppGenerator
+from core.app.apps.custom_agent.app_generator import CustomAgentAppGenerator
 from core.app.apps.workflow.app_generator import WorkflowAppGenerator
 from core.app.entities.app_invoke_entities import InvokeFrom
 from models.model import Account, App, AppMode, EndUser
@@ -67,6 +68,14 @@ class AppGenerateService:
             return WorkflowAppGenerator().generate(
                 app_model=app_model,
                 workflow=workflow,
+                user=user,
+                args=args,
+                invoke_from=invoke_from,
+                stream=streaming
+            )
+        elif app_model.mode == AppMode.CUSTOM_AGENT.value:
+            return CustomAgentAppGenerator().generate(
+                app_model=app_model,
                 user=user,
                 args=args,
                 invoke_from=invoke_from,

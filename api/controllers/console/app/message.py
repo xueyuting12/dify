@@ -233,9 +233,34 @@ class MessageApi(Resource):
         return message
 
 
+class MessageUpdateAnswerApi(Resource):
+
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def patch(self, message_id):
+        message_id_str = str(message_id)
+        message_obj = MessageService.get_message_info(message_id_str)
+        if message_obj is None:
+            raise NotFound("agent flow not found.")
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('answer', location='json', store_missing=False)
+        parser.add_argument('quote', location='json', store_missing=False)
+        args = parser.parse_args()
+
+        agent_flow = MessageService.update_message_answer_info(message_id_str, args)
+
+        if agent_flow is None:
+            raise NotFound("agent flow not found.")
+
+        return {}, 200
+
+
 api.add_resource(MessageSuggestedQuestionApi, '/apps/<uuid:app_id>/chat-messages/<uuid:message_id>/suggested-questions')
 api.add_resource(ChatMessageListApi, '/apps/<uuid:app_id>/chat-messages', endpoint='console_chat_messages')
 api.add_resource(MessageFeedbackApi, '/apps/<uuid:app_id>/feedbacks')
 api.add_resource(MessageAnnotationApi, '/apps/<uuid:app_id>/annotations')
 api.add_resource(MessageAnnotationCountApi, '/apps/<uuid:app_id>/annotations/count')
 api.add_resource(MessageApi, '/apps/<uuid:app_id>/messages/<uuid:message_id>', endpoint='console_message')
+api.add_resource(MessageUpdateAnswerApi, '/apps/messages/<uuid:message_id>')
