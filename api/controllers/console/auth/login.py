@@ -3,13 +3,16 @@ from flask import current_app, request
 from flask_restful import Resource, reqparse
 
 import services
+from config import get_env
 from controllers.console import api
 from controllers.console.auth.ldap_user import LDAPBackend
 from controllers.console.init_validate import get_init_validate_status
 from controllers.console.setup import setup_required, get_setup_status, setup
+from core.model_runtime.errors.validate import CredentialsValidateFailedError
 from libs.helper import email
 from libs.password import valid_password
 from services.account_service import AccountService, TenantService, RegisterService
+from services.model_provider_service import ModelProviderService
 
 
 # class LoginApi(Resource):
@@ -62,6 +65,8 @@ class LoginApi(Resource):
         except services.errors.account.AccountLoginError:
             return {'code': 'unauthorized', 'message': 'Invalid email or password'}, 401
         account = AccountService.authenticate(data['mail'], args['password'])
+
+        is_create_model = False
         if not account:
             account = RegisterService.register(
                 email=data['mail'],
@@ -72,9 +77,35 @@ class LoginApi(Resource):
                 setup()
                 AccountService.update_last_login(account, request)
 
-        TenantService.create_owner_tenant_if_not_exist(account)
+            is_create_model = True
+
+        tenant = TenantService.create_owner_tenant_if_not_exist(account)
 
         AccountService.update_last_login(account, request)
+
+        if is_create_model:
+            # 给每一个空间配置默认模型
+            model_provider_service = ModelProviderService()
+
+            try:
+                model_provider_service.save_model_credentials(
+                    tenant_id=tenant.id,
+                    provider=get_env('PROVIDER'),
+                    model=get_env('LLM_MODEL'),
+                    model_type=get_env('LLM_MODEL_TYPE'),
+                    credentials={"mode": get_env('LLM_MODE'),
+                                 "context_size": get_env('LLM_CONTEXT_SIZE'),
+                                 "max_tokens_to_sample": get_env('LLM_MAX_TOKENS_TO_SAMPLE'),
+                                 "function_calling_type": get_env('LLM_FUNCTION_CALLING_TYPE'),
+                                 "stream_function_calling": get_env('LLM_STREAM_FUNCTION_CALLING'),
+                                 "vision_support": get_env('LLM_VISION_SUPPORT'),
+                                 "stream_mode_delimiter": get_env('LLM_STREAM_MODE_DELIMITER'),
+                                 "api_key": get_env('LLM_API_KEY'),
+                                 "endpoint_url": get_env('LLM_ENDPOINT_YRL')
+                                 }
+                )
+            except CredentialsValidateFailedError as ex:
+                raise ValueError(str(ex))
 
         # todo: return the user info
         token = AccountService.get_account_jwt_token(account)
