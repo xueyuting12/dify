@@ -144,8 +144,8 @@ services:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
     # uncomment to expose dify-api port to host
-    # ports:
-    #   - "5001:5001"
+    ports:
+      - "5001:5001"
 
   # worker service
   # The Celery worker for processing the queue.
@@ -271,8 +271,8 @@ services:
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
     # uncomment to expose db(postgresql) port to host
-    # ports:
-    #   - "5432:5432"
+    ports:
+      - "5432:5432"
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -361,5 +361,5 @@ services:
       - api
       - web
     ports:
-      - "80:80"
+      - "3000:80"
       #- "443:443"
