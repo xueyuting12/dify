@@ -17,6 +17,7 @@ import { DotsGrid } from '@/app/components/base/icons/src/vender/line/general'
 import {
   ChatBot,
   CuteRobot,
+  CustomRobot
 } from '@/app/components/base/icons/src/vender/line/communication'
 import { Route } from '@/app/components/base/icons/src/vender/line/mapsAndTravel'
 import SearchInput from '@/app/components/base/search-input'
@@ -69,6 +70,7 @@ const Apps = () => {
   const options = [
     { value: 'all', text: t('app.types.all'), icon: <DotsGrid className='w-[14px] h-[14px] mr-1'/> },
     { value: 'chat', text: t('app.types.chatbot'), icon: <ChatBot className='w-[14px] h-[14px] mr-1'/> },
+    { value: 'custom-agent', text: t('app.types.customAgent'), icon: <CustomRobot className='w-[14px] h-[14px] mr-1'/> },
     { value: 'agent-chat', text: t('app.types.agent'), icon: <CuteRobot className='w-[14px] h-[14px] mr-1'/> },
     { value: 'workflow', text: t('app.types.workflow'), icon: <Route className='w-[14px] h-[14px] mr-1'/> },
   ]
