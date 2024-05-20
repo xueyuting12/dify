@@ -137,6 +137,19 @@ services:
       CODE_MAX_STRING_ARRAY_LENGTH: 30
       CODE_MAX_OBJECT_ARRAY_LENGTH: 30
       CODE_MAX_NUMBER_ARRAY_LENGTH: 1000
+      # llm模型配置
+      PROVIDER: 'openai_api_compatible'
+      LLM_MODEL: 'qwen110b'
+      LLM_MODEL_TYPE: 'llm'
+      LLM_MODE: 'chat'
+      LLM_CONTEXT_SIZE: '4096'
+      LLM_MAX_TOKENS_TO_SAMPLE: '4096'
+      LLM_FUNCTION_CALLING_TYPE: 'no_call'
+      LLM_STREAM_FUNCTION_CALLING: 'not_supported'
+      LLM_VISION_SUPPORT: 'no_support'
+      LLM_STREAM_MODE_DELIMITER: '\\n\\n'
+      LLM_API_KEY: 'sk-XsPWmJSlWRlOVUVcBeFd045d2fDd4598A726003d9e667a33'
+      LLM_ENDPOINT_YRL: 'http://116.63.86.12:3000/v1'
     depends_on:
       - db
       - redis
