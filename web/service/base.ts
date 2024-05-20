@@ -137,6 +137,7 @@ const handleStream = (
       }
       buffer += decoder.decode(result.value, { stream: true })
       const lines = buffer.split('\n\n')
+      // console.log('lines', lines)
       try {
         lines.forEach((message) => {
           if (message.startsWith('data: ')) { // check if it starts with data:
@@ -169,22 +170,34 @@ const handleStream = (
                 conversationId: bufferObj.conversation_id,
                 taskId: bufferObj.task_id,
                 messageId: bufferObj.id,
+              }, {
+                process: 'AI对话',
               })
               isFirstMessage = false
             }
             else if (bufferObj.event === 'quote') {
-              console.log('quote', bufferObj)
               if (bufferObj.documentList.length) {
                 onData('', isFirstMessage, {
                   conversationId: bufferObj.conversation_id,
                   taskId: bufferObj.task_id,
                   messageId: bufferObj.id,
-                }, {  
+                }, {
                   quoteList: bufferObj.documentList,
-                  cost: bufferObj.cost
+                  cost: bufferObj.cost,
+                  process: '',
                 })
                 isFirstMessage = false
               }
+            }
+            else if (bufferObj.event === 'process') {
+              onData('', isFirstMessage, {
+                conversationId: bufferObj.conversation_id,
+                taskId: bufferObj.task_id,
+                messageId: bufferObj.id,
+              }, {
+                process: bufferObj.answer,
+              })
+              isFirstMessage = false
             }
             else if (bufferObj.event === 'agent_thought') {
               onThought?.(bufferObj as ThoughtItem)

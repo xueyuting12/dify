@@ -54,7 +54,7 @@ const ChatWrapper = () => {
     appPrevChatList,
     taskId => stopChatMessageResponding('', taskId, isInstalledApp, appId),
   )
-  console.log('chatList', chatList)
+  // console.log('chatList', chatList)
 
   useEffect(() => {
     if (currentChatInstanceRef.current)

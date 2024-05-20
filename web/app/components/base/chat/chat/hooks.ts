@@ -240,6 +240,7 @@ export const useChat = (
       quote_list: [],
       cost: '',
       isAnswer: true,
+      process: '',
     }
 
     handleResponding(true)
@@ -272,7 +273,7 @@ export const useChat = (
       },
       {
         isPublicAPI,
-        onData: (message: string, isFirstMessage: boolean, { conversationId: newConversationId, messageId, taskId }: any, others?: any, ) => {
+        onData: (message: string, isFirstMessage: boolean, { conversationId: newConversationId, messageId, taskId }: any, others?: any) => {
           if (!isAgentMode) {
             responseItem.content = responseItem.content + message
           }
@@ -294,13 +295,14 @@ export const useChat = (
           if (messageId)
             responseItem.id = messageId
 
-          if (others && others?.quoteList.length) {
+          if (others && others?.quoteList?.length)
             responseItem.quote_list = others?.quoteList
-          }
 
-          if (others && others.cost) {
+          if (others && others.cost)
             responseItem.cost = others.cost
-          }
+
+          if (others && 'process' in others)
+            responseItem.process = others.process
 
           updateCurrentQA({
             responseItem,
@@ -314,12 +316,13 @@ export const useChat = (
 
           if (hasError)
             return
-        
-          if (isAutoSaveMessage)
+
+          if (isAutoSaveMessage) {
             await updataMessage(responseItem.id, responseItem.content, JSON.stringify({
               quote_list: responseItem.quote_list,
-              cost: responseItem.cost
+              cost: responseItem.cost,
             }))
+          }
 
           if (onConversationComplete)
             onConversationComplete(connversationId.current)
@@ -421,6 +424,7 @@ export const useChat = (
         onMessageEnd: (messageEnd) => {
           if (messageEnd.metadata?.annotation_reply) {
             responseItem.id = messageEnd.id
+            responseItem.process = ''
             responseItem.annotation = ({
               id: messageEnd.metadata.annotation_reply.id,
               authorName: messageEnd.metadata.annotation_reply.account.name,
@@ -440,7 +444,7 @@ export const useChat = (
             return
           }
           responseItem.citation = messageEnd.metadata?.retriever_resources || []
-
+          responseItem.process = ''
           const newListWithAnswer = produce(
             chatListRef.current.filter(item => item.id !== responseItem.id && item.id !== placeholderAnswerId),
             (draft) => {

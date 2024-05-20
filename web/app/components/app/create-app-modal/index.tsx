@@ -17,7 +17,7 @@ import Select from '@/app/components/base/select'
 import AppIcon from '@/app/components/base/app-icon'
 import EmojiPicker from '@/app/components/base/emoji-picker'
 import AppsFull from '@/app/components/billing/apps-full-in-dialog'
-import { AiText, ChatBot, CuteRobote, CustomRobote } from '@/app/components/base/icons/src/vender/solid/communication'
+import { AiText, ChatBot, CustomRobote, CuteRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 import { HelpCircle, XClose } from '@/app/components/base/icons/src/vender/line/general'
 import { Route } from '@/app/components/base/icons/src/vender/solid/mapsAndTravel'
 import TooltipPlus from '@/app/components/base/tooltip-plus'
@@ -51,7 +51,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
 
   const isCreatingRef = useRef(false)
 
-  const getAgentTypes = async() => {
+  const getAgentTypes = async () => {
     const res = await fetchAgentTypes()
     const temp = res.data.map((item: any) => {
       item.value = item.id
@@ -66,7 +66,6 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
   }, [])
 
   const onAgentTypeChange = (item: any) => {
-    console.log('agentType', item.value)
     setAgentType(item.value)
   }
 
@@ -93,12 +92,15 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
         icon: emoji.icon,
         icon_background: emoji.icon_background,
         mode: appMode,
-        api_agent_id: agentType
+        api_agent_id: agentType,
       })
       notify({ type: 'success', message: t('app.newApp.appCreated') })
       onSuccess()
       onClose()
       mutateApps()
+      setAgentType('')
+      setName('')
+      setDescription('')
       localStorage.setItem(NEED_REFRESH_APP_LIST_KEY, '1')
       appMode !== 'custom-agent' && getRedirection(isCurrentWorkspaceManager, app, push)
     }
@@ -338,8 +340,8 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
       </div>
       {/* 自定义agent类型 */}
       {
-        appMode === 'custom-agent' && 
-        <div className='pt-2 px-8'>
+        appMode === 'custom-agent'
+        && <div className='pt-2 px-8'>
           <div className='py-2 text-sm font-medium leading-[20px] text-gray-900'>{t('app.newApp.customAgentType')}</div>
           <div className='flex items-center justify-between space-x-2'>
             <Select

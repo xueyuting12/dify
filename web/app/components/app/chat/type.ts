@@ -88,6 +88,7 @@ export type IChatItem = {
   input?: any
   quote_list?: any[]
   cost?: string
+  process?: string
 }
 
 export type MessageEnd = {
