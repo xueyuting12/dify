@@ -150,6 +150,7 @@ services:
       LLM_STREAM_MODE_DELIMITER: '\\n\\n'
       LLM_API_KEY: 'sk-XsPWmJSlWRlOVUVcBeFd045d2fDd4598A726003d9e667a33'
       LLM_ENDPOINT_YRL: 'http://116.63.86.12:3000/v1'
+      CUSTOM_AGENT_COLLECTION: 'yssj_md'
     depends_on:
       - db
       - redis
@@ -336,8 +337,8 @@ services:
     image: langgenius/dify-sandbox:latest
     restart: always
     cap_add:
-    # Why is sys_admin permission needed?
-    # https://docs.dify.ai/getting-started/install-self-hosted/install-faq#id-16.-why-is-sys_admin-permission-needed
+      # Why is sys_admin permission needed?
+      # https://docs.dify.ai/getting-started/install-self-hosted/install-faq#id-16.-why-is-sys_admin-permission-needed
       - SYS_ADMIN
     environment:
       # The DifySandbox configurations
