@@ -118,6 +118,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
             conversation,
             message
         ) = self._init_generate_records(application_generate_entity, conversation)
+        args["conversation_id"] = conversation.id
         response = self._generate(app_model.id, message.id, args)
 
         return response
