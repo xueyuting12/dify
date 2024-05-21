@@ -46,6 +46,8 @@ class AppService:
             filters.append(App.mode == AppMode.AGENT_CHAT.value)
         elif args['mode'] == 'channel':
             filters.append(App.mode == AppMode.CHANNEL.value)
+        elif args['mode'] == 'custom-agent':
+            filters.append(App.mode == AppMode.CUSTOM_AGENT.value)
 
         if 'name' in args and args['name']:
             name = args['name'][:30]

@@ -7,6 +7,7 @@ from typing import Any, Union
 import requests
 from flask_login import current_user
 
+from config import get_env
 from core.app.app_config.easy_ui_based_app.model_config.converter import ModelConfigConverter
 from core.app.app_config.features.file_upload.manager import FileUploadConfigManager
 from core.app.apps.custom_agent.app_config_manager import CustomAgentAppConfigManager
@@ -117,6 +118,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
             conversation,
             message
         ) = self._init_generate_records(application_generate_entity, conversation)
+        args["conversation_id"] = conversation.id
         response = self._generate(app_model.id, message.id, args)
 
         return response
@@ -138,7 +140,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
                 data_body = {
                     "appId": app_id,
                     "conversationId": args["conversation_id"],
-                    "collection": "shelby",
+                    "collection": get_env('CUSTOM_AGENT_COLLECTION'),
                     "stream": True,
                     "messages": [
                         {
