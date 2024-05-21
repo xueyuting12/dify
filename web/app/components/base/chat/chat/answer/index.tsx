@@ -2,7 +2,7 @@ import type {
   FC,
   ReactNode,
 } from 'react'
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type {
   ChatConfig,
@@ -12,14 +12,18 @@ import Operation from './operation'
 import AgentContent from './agent-content'
 import BasicContent from './basic-content'
 import SuggestedQuestions from './suggested-questions'
+import QuoteModal from './quote-modal'
 import More from './more'
 import WorkflowProcess from './workflow-process'
+import s from './index.module.css'
 import { AnswerTriangle } from '@/app/components/base/icons/src/vender/solid/general'
 import { MessageFast } from '@/app/components/base/icons/src/vender/solid/communication'
 import LoadingAnim from '@/app/components/app/chat/loading-anim'
 import Citation from '@/app/components/app/chat/citation'
 import { EditTitle } from '@/app/components/app/annotation/edit-annotation-modal/edit-item'
 import type { Emoji } from '@/app/components/tools/types'
+import Tag from '@/app/components/base/tag'
+import { Link as LinkIcon } from '@/app/components/base/icons/src/public/chat'
 
 type AnswerProps = {
   item: ChatItem
@@ -56,6 +60,7 @@ const Answer: FC<AnswerProps> = ({
 
   const [containerWidth, setContainerWidth] = useState(0)
   const [contentWidth, setContentWidth] = useState(0)
+  const [openQuote, setOpenQuote] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -77,6 +82,10 @@ const Answer: FC<AnswerProps> = ({
       getContentWidth()
   }, [responding])
 
+  const quoteDocLinks = useMemo(() => {
+    return Array.from(new Set(item.quote_list?.map(item => item.source)))
+  }, [item.quote_list])
+
   return (
     <div className='flex mb-2 last:mb-0'>
       <div className='shrink-0 relative w-10 h-10'>
@@ -96,6 +105,16 @@ const Answer: FC<AnswerProps> = ({
         }
       </div>
       <div className='chat-answer-container grow w-0 ml-4' ref={containerRef}>
+        {
+          item.process && (
+            <div className="mb-2">
+              <Tag className=''>
+                <div className={`${s.statusAnimation} w-2 h-2 rounded-full bg-green-600 mr-2`}></div>
+                {`${item.process}`}
+              </Tag>
+            </div>
+          )
+        }
         <div className={`group relative pr-10 ${chatAnswerContainerInner}`}>
           <AnswerTriangle className='absolute -left-2 top-0 w-2 h-3 text-gray-100' />
           <div
@@ -141,7 +160,47 @@ const Answer: FC<AnswerProps> = ({
             }
             {
               content && !hasAgentThoughts && (
-                <BasicContent item={item} />
+                <>
+                  <BasicContent item={item} />
+                  {
+                    quoteDocLinks.length
+                      ? <div className='mt-4 mb-3'>
+                        { quoteDocLinks.map((item) => {
+                          return <div key={item} className='flex items-center mr-4'>
+                            <LinkIcon className='mr-1' />
+                            <a
+                              href={item}
+                              target='_blank'
+                              className='font-bold text-xs text-gray-600 underline underline-offset-2' >
+                              {item.split('/')[item.split('/').length - 1]}
+                            </a>
+                          </div>
+                        }) }
+                      </div>
+                      : null
+                  }
+                  {
+                    item.quote_list?.length
+                      ? <div className='pt-2 inline mr-3' onClick={() => { setOpenQuote(true) }}>
+                        <Tag
+                          className='cursor-pointer'
+                          color='primary'
+                          bordered
+                          hideBg>
+                          {`${item.quote_list?.length}条引用`}
+                        </Tag>
+                      </div>
+                      : null
+                  }
+                  {
+                    item.cost && <Tag
+                      color='purple'
+                      bordered
+                      hideBg>
+                      {`${Number(item.cost).toFixed(2)}s`}
+                    </Tag>
+                  }
+                </>
               )
             }
             {
@@ -171,6 +230,10 @@ const Answer: FC<AnswerProps> = ({
         </div>
         <More more={more} />
       </div>
+      <QuoteModal
+        isShow={openQuote}
+        onClose={() => { setOpenQuote(false) }}
+        quoteList={item.quote_list || []} />
     </div>
   )
 }

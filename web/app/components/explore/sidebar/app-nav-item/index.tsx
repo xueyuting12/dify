@@ -4,13 +4,16 @@ import React, { useRef } from 'react'
 
 import { useRouter } from 'next/navigation'
 import { useHover } from 'ahooks'
+import type { AppMode } from '@/types/app'
 import s from './style.module.css'
 import ItemOperation from '@/app/components/explore/item-operation'
 import AppIcon from '@/app/components/base/app-icon'
+import { CustomRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 
 export type IAppNavItemProps = {
   isMobile: boolean
   name: string
+  mode: AppMode
   id: string
   icon: string
   icon_background: string
@@ -24,6 +27,7 @@ export type IAppNavItemProps = {
 export default function AppNavItem({
   isMobile,
   name,
+  mode,
   id,
   icon,
   icon_background,
@@ -54,7 +58,14 @@ export default function AppNavItem({
       {!isMobile && (
         <>
           <div className='flex items-center space-x-2 w-0 grow'>
-            <AppIcon size='tiny' icon={icon} background={icon_background} />
+            <div className='relative'>
+              <AppIcon size='tiny' icon={icon} background={icon_background} />
+              {
+                mode === 'custom-agent' && <span className='absolute top-[-3px] right-[-1px] w-2 h-2 bg-white rounded border-[0.5px] border-[rgba(0,0,0,0.02)] shadow-sm'>
+                  <CustomRobote className='w-3 h-3 text-rose-600' />
+                </span>
+              }
+            </div>
             <div className='overflow-hidden text-ellipsis whitespace-nowrap' title={name}>{name}</div>
           </div>
           <div className='shrink-0 h-6' onClick={e => e.stopPropagation()}>

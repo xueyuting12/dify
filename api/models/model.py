@@ -34,6 +34,7 @@ class AppMode(Enum):
     ADVANCED_CHAT = 'advanced-chat'
     AGENT_CHAT = 'agent-chat'
     CHANNEL = 'channel'
+    CUSTOM_AGENT = 'custom-agent'
 
     @classmethod
     def value_of(cls, value: str) -> 'AppMode':
@@ -478,7 +479,6 @@ class InstalledApp(db.Model):
         return tenant
 
 
-
 class Conversation(db.Model):
     __tablename__ = 'conversations'
     __table_args__ = (
@@ -817,7 +817,8 @@ class Message(db.Model):
                     else:
                         extension = '.bin'
                     # add sign url
-                    url = ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=tool_file_id, extension=extension)
+                    url = ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=tool_file_id,
+                                                                           extension=extension)
 
             files.append({
                 'id': message_file.id,
@@ -835,6 +836,12 @@ class Message(db.Model):
             return db.session.query(WorkflowRun).filter(WorkflowRun.id == self.workflow_run_id).first()
 
         return None
+
+    @property
+    def quote_list(self):
+        message_info = db.session.query(MessageInfo).filter(MessageInfo.message_id == self.id).first()
+        if message_info:
+            return message_info.quote
 
 
 class MessageFeedback(db.Model):
@@ -1325,3 +1332,40 @@ class TagBinding(db.Model):
     target_id = db.Column(UUID, nullable=True)
     created_by = db.Column(UUID, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text('CURRENT_TIMESTAMP(0)'))
+
+
+class MessageInfo(db.Model):
+    __tablename__ = 'message_info'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('id', name='message_info_pkey'),
+    )
+
+    id = db.Column(UUID, server_default=db.text('uuid_generate_v4()'))
+    message_id = db.Column(UUID, nullable=False)
+    quote = db.Column(db.Text)
+    process = db.Column(db.Text)
+
+
+class ApiAgentRegister(db.Model):
+    __tablename__ = 'api_agent_register'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('id', name='api_agent_register_pkey'),
+    )
+
+    id = db.Column(UUID, server_default=db.text('uuid_generate_v4()'))
+    host = db.Column(db.String(255), nullable=False)
+    url = db.Column(db.String(255), nullable=False)
+    ai_agent_name = db.Column(db.String(255), nullable=False)
+    desc = db.Column(db.Text, nullable=True)
+
+
+class ApiAgentApp(db.Model):
+    __tablename__ = 'api_agent_app'
+    __table_args__ = (
+        db.PrimaryKeyConstraint('id', name='api_agent_app_pkey'),
+        db.Index('api_agent_id_app_id_idx', 'app_id', 'api_agent_id'),
+    )
+
+    id = db.Column(UUID, server_default=db.text('uuid_generate_v4()'))
+    api_agent_id = db.Column(UUID, nullable=False)
+    app_id = db.Column(UUID, nullable=False)

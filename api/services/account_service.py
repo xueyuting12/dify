@@ -233,6 +233,8 @@ class TenantService:
         db.session.commit()
         tenant_was_created.send(tenant)
 
+        return tenant
+
     @staticmethod
     def create_tenant_member(tenant: Tenant, account: Account, role: str = 'normal') -> TenantAccountJoin:
         """Create tenant member"""

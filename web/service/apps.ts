@@ -16,8 +16,12 @@ export const fetchAppTemplates: Fetcher<AppTemplatesResponse, { url: string }> =
   return get<AppTemplatesResponse>(url)
 }
 
-export const createApp: Fetcher<AppDetailResponse, { name: string; icon: string; icon_background: string; mode: AppMode; description?: string; config?: ModelConfig }> = ({ name, icon, icon_background, mode, description, config }) => {
-  return post<AppDetailResponse>('apps', { body: { name, icon, icon_background, mode, description, model_config: config } })
+export const fetchAgentTypes = () => {
+  return get<any>(`apps/api-agent`)
+}
+
+export const createApp: Fetcher<AppDetailResponse, { name: string; icon: string; icon_background: string; mode: AppMode; description?: string; api_agent_id?: string; config?: ModelConfig }> = ({ name, icon, icon_background, mode, description, config, api_agent_id }) => {
+  return post<AppDetailResponse>('apps', { body: { name, icon, icon_background, mode, description, model_config: config, api_agent_id } })
 }
 
 export const updateAppInfo: Fetcher<AppDetailResponse, { appID: string; name: string; icon: string; icon_background: string; description: string }> = ({ appID, name, icon, icon_background, description }) => {

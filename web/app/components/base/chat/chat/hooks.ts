@@ -17,6 +17,7 @@ import type {
 import { TransferMethod } from '@/types/app'
 import { useToastContext } from '@/app/components/base/toast'
 import { ssePost } from '@/service/base'
+import { updataMessage } from '@/service/explore'
 import { replaceStringWithValues } from '@/app/components/app/configuration/prompt-value-panel'
 import type { Annotation } from '@/models/log'
 import { WorkflowRunningStatus } from '@/app/components/workflow/types'
@@ -26,6 +27,7 @@ type SendCallback = {
   onGetConvesationMessages?: (conversationId: string, getAbortController: GetAbortController) => Promise<any>
   onGetSuggestedQuestions?: (responseItemId: string, getAbortController: GetAbortController) => Promise<any>
   onConversationComplete?: (conversationId: string) => void
+  isAutoSaveMessage?: boolean
   isPublicAPI?: boolean
 }
 
@@ -178,6 +180,7 @@ export const useChat = (
     placeholderAnswerId: string
     questionItem: ChatItem
   }) => {
+    // console.log('updateCurrentQA', responseItem)
     const newListWithAnswer = produce(
       chatListRef.current.filter(item => item.id !== responseItem.id && item.id !== placeholderAnswerId),
       (draft) => {
@@ -196,6 +199,7 @@ export const useChat = (
       onGetConvesationMessages,
       onGetSuggestedQuestions,
       onConversationComplete,
+      isAutoSaveMessage,
       isPublicAPI,
     }: SendCallback,
   ) => {
@@ -233,7 +237,10 @@ export const useChat = (
       content: '',
       agent_thoughts: [],
       message_files: [],
+      quote_list: [],
+      cost: '',
       isAnswer: true,
+      process: '',
     }
 
     handleResponding(true)
@@ -266,7 +273,7 @@ export const useChat = (
       },
       {
         isPublicAPI,
-        onData: (message: string, isFirstMessage: boolean, { conversationId: newConversationId, messageId, taskId }: any) => {
+        onData: (message: string, isFirstMessage: boolean, { conversationId: newConversationId, messageId, taskId }: any, others?: any) => {
           if (!isAgentMode) {
             responseItem.content = responseItem.content + message
           }
@@ -288,6 +295,15 @@ export const useChat = (
           if (messageId)
             responseItem.id = messageId
 
+          if (others && others?.quoteList?.length)
+            responseItem.quote_list = others?.quoteList
+
+          if (others && others.cost)
+            responseItem.cost = others.cost
+
+          if (others && 'process' in others)
+            responseItem.process = others.process
+
           updateCurrentQA({
             responseItem,
             questionId,
@@ -300,6 +316,13 @@ export const useChat = (
 
           if (hasError)
             return
+
+          if (isAutoSaveMessage) {
+            await updataMessage(responseItem.id, responseItem.content, JSON.stringify({
+              quote_list: responseItem.quote_list,
+              cost: responseItem.cost,
+            }))
+          }
 
           if (onConversationComplete)
             onConversationComplete(connversationId.current)
@@ -401,6 +424,7 @@ export const useChat = (
         onMessageEnd: (messageEnd) => {
           if (messageEnd.metadata?.annotation_reply) {
             responseItem.id = messageEnd.id
+            responseItem.process = ''
             responseItem.annotation = ({
               id: messageEnd.metadata.annotation_reply.id,
               authorName: messageEnd.metadata.annotation_reply.account.name,
@@ -420,7 +444,7 @@ export const useChat = (
             return
           }
           responseItem.citation = messageEnd.metadata?.retriever_resources || []
-
+          responseItem.process = ''
           const newListWithAnswer = produce(
             chatListRef.current.filter(item => item.id !== responseItem.id && item.id !== placeholderAnswerId),
             (draft) => {

@@ -20,7 +20,7 @@ import Divider from '@/app/components/base/divider'
 import { getRedirection } from '@/utils/app-redirection'
 import { useProviderContext } from '@/context/provider-context'
 import { NEED_REFRESH_APP_LIST_KEY } from '@/config'
-import { AiText, ChatBot, CuteRobote } from '@/app/components/base/icons/src/vender/solid/communication'
+import { AiText, ChatBot, CuteRobote, CustomRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 import { Route } from '@/app/components/base/icons/src/vender/solid/mapsAndTravel'
 import { DotsHorizontal } from '@/app/components/base/icons/src/vender/line/general'
 import type { CreateAppModalProps } from '@/app/components/explore/create-app-modal'
@@ -224,9 +224,9 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
       <div
         onClick={(e) => {
           e.preventDefault()
-          getRedirection(isCurrentWorkspaceManager, app, push)
+          app.mode !== 'custom-agent' && getRedirection(isCurrentWorkspaceManager, app, push)
         }}
-        className='group flex col-span-1 bg-white border-2 border-solid border-transparent rounded-xl shadow-sm min-h-[160px] flex flex-col transition-all duration-200 ease-in-out cursor-pointer hover:shadow-lg'
+        className={`group flex col-span-1 bg-white border-2 border-solid border-transparent rounded-xl shadow-sm min-h-[160px] flex flex-col transition-all duration-200 ease-in-out hover:shadow-lg ${app.mode !== 'custom-agent' ? 'cursor-pointer' : 'cursor-not-allowed'}`}
       >
         <div className='flex pt-[14px] px-[14px] pb-3 h-[66px] items-center gap-3 grow-0 shrink-0'>
           <div className='relative shrink-0'>
@@ -238,6 +238,9 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
             <span className='absolute bottom-[-3px] right-[-3px] w-4 h-4 p-0.5 bg-white rounded border-[0.5px] border-[rgba(0,0,0,0.02)] shadow-sm'>
               {app.mode === 'advanced-chat' && (
                 <ChatBot className='w-3 h-3 text-[#1570EF]' />
+              )}
+              {app.mode === 'custom-agent' && (
+                <CustomRobote className='w-3 h-3 text-rose-600' />
               )}
               {app.mode === 'agent-chat' && (
                 <CuteRobote className='w-3 h-3 text-indigo-600' />
