@@ -143,7 +143,7 @@ const handleStream = (
           if (message.startsWith('data: ')) { // check if it starts with data:
             try {
               bufferObj = JSON.parse(message.substring(6)) as Record<string, any>// remove data: and parse as json
-              console.log(bufferObj)
+              // console.log(bufferObj)
             }
             catch (e) {
               // mute handle message cut off
@@ -489,11 +489,6 @@ export const ssePost = (
   const { body } = options
   if (body)
     options.body = JSON.stringify(body)
-  // options.body = JSON.stringify({
-  //   "input": "推荐1个东莞的优质渠道商家"
-  // })
-
-  // globalThis.fetch('http://10.118.36.211:3003/api/event-stream', { method: 'POST' })
   globalThis.fetch(urlWithPrefix, options as RequestInit)
     .then((res) => {
       if (!/^(2|3)\d{2}$/.test(String(res.status))) {

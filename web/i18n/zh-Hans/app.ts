@@ -44,7 +44,7 @@ const translation = {
     captionName: '图标 & 名称',
     appNamePlaceholder: '给你的应用起个名字',
     customAgentType: '自定义Agent',
-    customAgentTypePlaceholder: '选择使用哪一个自定义Agent',
+    customAgentTypePlaceholder: '选择使用已存在的Agent',
     captionDescription: '描述',
     appDescriptionPlaceholder: '输入应用的描述',
     useTemplate: '使用该模板',

@@ -83,7 +83,7 @@ const Answer: FC<AnswerProps> = ({
   }, [responding])
 
   const quoteDocLinks = useMemo(() => {
-    return Array.from(new Set(item.quote_list?.map(item => item.source)))
+    return Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
   }, [item.quote_list])
 
   return (

@@ -13,7 +13,7 @@ import type { AppMode } from '@/types/app'
 import { createApp, fetchAgentTypes } from '@/service/apps'
 import Modal from '@/app/components/base/modal'
 import Button from '@/app/components/base/button'
-import Select from '@/app/components/base/select'
+import { SimpleSelect } from '@/app/components/base/select'
 import AppIcon from '@/app/components/base/app-icon'
 import EmojiPicker from '@/app/components/base/emoji-picker'
 import AppsFull from '@/app/components/billing/apps-full-in-dialog'
@@ -343,13 +343,12 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
         appMode === 'custom-agent'
         && <div className='pt-2 px-8'>
           <div className='py-2 text-sm font-medium leading-[20px] text-gray-900'>{t('app.newApp.customAgentType')}</div>
-          <div className='flex items-center justify-between space-x-2'>
-            <Select
-              allowSearch={false}
+          <div className='w-full'>
+            <SimpleSelect
+              // allowSearch={false}
               items={agentTypeArr}
-              onSelect={onAgentTypeChange}
+              onSelect={value => onAgentTypeChange(value)}
               placeholder={t('app.newApp.customAgentTypePlaceholder') || ''}
-              className='grow'
             />
           </div>
         </div>
