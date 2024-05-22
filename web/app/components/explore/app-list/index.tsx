@@ -1,8 +1,7 @@
 'use client'
-
 import React, { useMemo, useState } from 'react'
 import cn from 'classnames'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useContext } from 'use-context-selector'
 import useSWR from 'swr'
@@ -12,16 +11,17 @@ import ExploreContext from '@/context/explore-context'
 import type { App } from '@/models/explore'
 import Category from '@/app/components/explore/category'
 import AppCard from '@/app/components/explore/app-card'
-import { fetchAppDetail, fetchAppList } from '@/service/explore'
-import { importApp } from '@/service/apps'
+// import { fetchAppDetail, fetchAppList } from '@/service/explore'
+// import { importApp } from '@/service/apps'
 import { useTabSearchParams } from '@/hooks/use-tab-searchparams'
 import CreateAppModal from '@/app/components/explore/create-app-modal'
 import AppTypeSelector from '@/app/components/app/type-selector'
 import type { CreateAppModalProps } from '@/app/components/explore/create-app-modal'
-import Loading from '@/app/components/base/loading'
+// import Loading from '@/app/components/base/loading'
 import { NEED_REFRESH_APP_LIST_KEY } from '@/config'
-import { useAppContext } from '@/context/app-context'
-import { getRedirection } from '@/utils/app-redirection'
+// import { useAppContext } from '@/context/app-context'
+// import { getRedirection } from '@/utils/app-redirection'
+import { createApp, fetchAgentTypes } from '@/service/apps'
 
 type AppsProps = {
   pageType?: PageType
@@ -38,8 +38,8 @@ const Apps = ({
   onSuccess,
 }: AppsProps) => {
   const { t } = useTranslation()
-  const { isCurrentWorkspaceManager } = useAppContext()
-  const { push } = useRouter()
+  // const { isCurrentWorkspaceManager } = useAppContext()
+  // const { push } = useRouter()
   const { hasEditPermission } = useContext(ExploreContext)
   const allCategoriesEn = t('explore.apps.allCategories', { lng: 'en' })
 
@@ -49,64 +49,116 @@ const Apps = ({
     disableSearchParams: pageType !== PageType.EXPLORE,
   })
 
-  const {
-    data: { categories, allList },
-  } = useSWR(
-    ['/explore/apps'],
-    () =>
-      fetchAppList().then(({ categories, recommended_apps }) => ({
-        categories,
-        allList: recommended_apps.sort((a, b) => a.position - b.position),
-      })),
+  // const {
+  //   data: { categories, allList },
+  // } = useSWR(
+  //   ['/explore/apps'],
+  //   () =>
+  //     fetchAppList().then(({ categories, recommended_apps }) => {
+  //       return ({
+  //         categories,
+  //         allList: recommended_apps.sort((a, b) => a.position - b.position),
+  //     })}),
+  //   {
+  //     fallbackData: {
+  //       categories: [],
+  //       allList: [],
+  //     },
+  //   },
+  // )
+
+  // 改为agent下拉选项
+  const agentList = useSWR(
+    ['apps/api-agent'],
+    () => fetchAgentTypes().then((res) => {
+      res.data.map((item: any) => {
+        item.app = {
+          icon: '',
+          id: item.id,
+          name: item.ai_agent_name,
+          icon_background: '#FFEAD5',
+          description: item.desc,
+        }
+        return item
+      })
+      return res.data
+    }),
     {
-      fallbackData: {
-        categories: [],
-        allList: [],
-      },
+      fallbackData: [], // 或者你想要的回退数据
     },
   )
 
   const filteredList = useMemo(() => {
-    if (currCategory === allCategoriesEn) {
-      if (!currentType)
-        return allList
-      else if (currentType === 'chatbot')
-        return allList.filter(item => (item.app.mode === 'chat' || item.app.mode === 'advanced-chat'))
-      else if (currentType === 'agent')
-        return allList.filter(item => (item.app.mode === 'agent-chat'))
-      else
-        return allList.filter(item => (item.app.mode === 'workflow'))
-    }
-    else {
-      if (!currentType)
-        return allList.filter(item => item.category === currCategory)
-      else if (currentType === 'chatbot')
-        return allList.filter(item => (item.app.mode === 'chat' || item.app.mode === 'advanced-chat') && item.category === currCategory)
-      else if (currentType === 'agent')
-        return allList.filter(item => (item.app.mode === 'agent-chat') && item.category === currCategory)
-      else
-        return allList.filter(item => (item.app.mode === 'workflow') && item.category === currCategory)
-    }
-  }, [currentType, currCategory, allCategoriesEn, allList])
+    return agentList.data
+  }, [agentList])
+
+  // const filteredList = useMemo(() => {
+  //   if (currCategory === allCategoriesEn) {
+  //     if (!currentType)
+  //       return allList
+  //     else if (currentType === 'chatbot')
+  //       return allList.filter(item => (item.app.mode === 'chat' || item.app.mode === 'advanced-chat'))
+  //     else if (currentType === 'agent')
+  //       return allList.filter(item => (item.app.mode === 'agent-chat'))
+  //     else
+  //       return allList.filter(item => (item.app.mode === 'workflow'))
+  //   }
+  //   else {
+  //     if (!currentType)
+  //       return allList.filter(item => item.category === currCategory)
+  //     else if (currentType === 'chatbot')
+  //       return allList.filter(item => (item.app.mode === 'chat' || item.app.mode === 'advanced-chat') && item.category === currCategory)
+  //     else if (currentType === 'agent')
+  //       return allList.filter(item => (item.app.mode === 'agent-chat') && item.category === currCategory)
+  //     else
+  //       return allList.filter(item => (item.app.mode === 'workflow') && item.category === currCategory)
+  //   }
+  // }, [currentType, currCategory, allCategoriesEn, allList])
 
   const [currApp, setCurrApp] = React.useState<App | null>(null)
+
   const [isShowCreateModal, setIsShowCreateModal] = React.useState(false)
-  const onCreate: CreateAppModalProps['onConfirm'] = async ({
-    name,
-    icon,
-    icon_background,
-    description,
-  }) => {
-    const { export_data } = await fetchAppDetail(
-      currApp?.app.id as string,
-    )
+  // const onCreate: CreateAppModalProps['onConfirm'] = async ({
+  //   name,
+  //   icon,
+  //   icon_background,
+  //   description,
+  // }) => {
+  //   const { export_data } = await fetchAppDetail(
+  //     currApp?.app.id as string,
+  //   )
+  //   try {
+  //     const app = await importApp({
+  //       data: export_data,
+  //       name,
+  //       icon,
+  //       icon_background,
+  //       description,
+  //     })
+  //     setIsShowCreateModal(false)
+  //     Toast.notify({
+  //       type: 'success',
+  //       message: t('app.newApp.appCreated'),
+  //     })
+  //     if (onSuccess)
+  //       onSuccess()
+  //     localStorage.setItem(NEED_REFRESH_APP_LIST_KEY, '1')
+  //     getRedirection(isCurrentWorkspaceManager, app, push)
+  //   }
+  //   catch (e) {
+  //     Toast.notify({ type: 'error', message: t('app.newApp.appCreateFailed') })
+  //   }
+  // }
+
+  const onCreate: CreateAppModalProps['onConfirm'] = async (a) => {
     try {
-      const app = await importApp({
-        data: export_data,
-        name,
-        icon,
-        icon_background,
-        description,
+      await createApp({
+        name: a.name,
+        description: a.description,
+        icon: a.icon,
+        icon_background: a.icon_background,
+        mode: 'custom-agent',
+        api_agent_id: currApp?.app.id,
       })
       setIsShowCreateModal(false)
       Toast.notify({
@@ -116,20 +168,22 @@ const Apps = ({
       if (onSuccess)
         onSuccess()
       localStorage.setItem(NEED_REFRESH_APP_LIST_KEY, '1')
-      getRedirection(isCurrentWorkspaceManager, app, push)
+      // getRedirection(isCurrentWorkspaceManager, app, push)
+      // const { installed_apps }: any = await doFetchInstalledAppList()
+      // setInstalledApps(installed_apps)
     }
     catch (e) {
       Toast.notify({ type: 'error', message: t('app.newApp.appCreateFailed') })
     }
   }
 
-  if (!categories) {
-    return (
-      <div className="flex h-full items-center">
-        <Loading type="area" />
-      </div>
-    )
-  }
+  // if (!categories) {
+  //   return (
+  //     <div className="flex h-full items-center">
+  //       <Loading type="area" />
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className={cn(
@@ -152,8 +206,14 @@ const Apps = ({
             <div className='mx-2 w-[1px] h-3.5 bg-gray-200'/>
           </>
         )}
-        <Category
+        {/* <Category
           list={categories}
+          value={currCategory}
+          onChange={setCurrCategory}
+          allCategoriesEn={allCategoriesEn}
+        /> */}
+        <Category
+          list={[]}
           value={currCategory}
           onChange={setCurrCategory}
           allCategoriesEn={allCategoriesEn}
@@ -169,18 +229,24 @@ const Apps = ({
             'grid content-start shrink-0',
             pageType === PageType.EXPLORE ? 'gap-4 px-6 sm:px-12' : 'gap-3 px-8  sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-4',
           )}>
-          {filteredList.map(app => (
-            <AppCard
-              key={app.app_id}
-              isExplore={pageType === PageType.EXPLORE}
-              app={app}
-              canCreate={hasEditPermission}
-              onCreate={() => {
-                setCurrApp(app)
-                setIsShowCreateModal(true)
-              }}
-            />
-          ))}
+
+          {filteredList.map((app: any) => {
+            return (
+              <>
+                <AppCard
+                  key={app.app_id}
+                  isExplore={pageType === PageType.EXPLORE}
+                  app={app}
+                  canCreate={hasEditPermission}
+                  onCreate={() => {
+                    setCurrApp(app)
+                    setIsShowCreateModal(true)
+                  }}
+                />
+              </>
+            )
+          },
+          )}
         </nav>
       </div>
       {isShowCreateModal && (
