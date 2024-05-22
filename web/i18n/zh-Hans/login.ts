@@ -1,8 +1,8 @@
 const translation = {
   pageTitle: '纽带星云',
   welcome: '欢迎来到 纽带星云, 登录以继续',
-  email: '邮箱',
-  emailPlaceholder: '输入邮箱地址',
+  email: '工号',
+  emailPlaceholder: '输入工号登陆',
   password: '密码',
   passwordPlaceholder: '输入密码',
   name: '用户名',
