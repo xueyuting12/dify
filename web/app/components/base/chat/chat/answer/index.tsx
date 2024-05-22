@@ -83,7 +83,11 @@ const Answer: FC<AnswerProps> = ({
   }, [responding])
 
   const quoteDocLinks = useMemo(() => {
-    return Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
+    //  Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
+    return Array.from(new Set(item.quote_list?.map(attr => attr.source)))
+      .map((source) => {
+        return item.quote_list?.find(item => item.source === source)
+      })
   }, [item.quote_list])
 
   return (
@@ -169,10 +173,10 @@ const Answer: FC<AnswerProps> = ({
                           return <div key={item} className='flex items-center mr-4'>
                             <LinkIcon className='mr-1' />
                             <a
-                              href={item}
+                              href={item.source}
                               target='_blank'
                               className='font-bold text-xs text-gray-600 underline underline-offset-2' >
-                              {item.split('/')[item.split('/').length - 1]}
+                              {item.source_name || item.source.split('/')[item.source.split('/').length - 1]}
                             </a>
                           </div>
                         }) }
