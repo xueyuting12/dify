@@ -3,11 +3,10 @@ import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
-import exploreI18n from '@/i18n/en-US/explore'
 import type { AppCategory } from '@/models/explore'
 import { ThumbsUp } from '@/app/components/base/icons/src/vender/line/alertsAndFeedback'
 
-const categoryI18n = exploreI18n.category
+// const categoryI18n = exploreI18n.category
 
 export type ICategoryProps = {
   className?: string
@@ -44,7 +43,8 @@ const Category: FC<ICategoryProps> = ({
         <ThumbsUp className='mr-1 w-3.5 h-3.5'/>
         {t('explore.apps.allCategories')}
       </div>
-      {list.map(name => (
+      {/* 保留推荐 */}
+      {/* {list.map(name => (
         <div
           key={name}
           className={itemClassName(name === value)}
@@ -52,7 +52,7 @@ const Category: FC<ICategoryProps> = ({
         >
           {categoryI18n[name] ? t(`explore.category.${name}`) : name}
         </div>
-      ))}
+      ))} */}
     </div>
   )
 }
