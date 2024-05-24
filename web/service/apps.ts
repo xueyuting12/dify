@@ -1,6 +1,6 @@
 import type { Fetcher } from 'swr'
 import { del, get, post, put } from './base'
-import type { ApikeysListResponse, AppDailyConversationsResponse, AppDailyEndUsersResponse, AppDetailResponse, AppListResponse, AppStatisticsResponse, AppTemplatesResponse, AppTokenCostsResponse, AppVoicesListResponse, CreateApiKeyResponse, GenerationIntroductionResponse, UpdateAppModelConfigResponse, UpdateAppSiteCodeResponse, UpdateOpenAIKeyResponse, ValidateOpenAIKeyResponse, WorkflowDailyConversationsResponse } from '@/models/app'
+import type { AgentTypes, ApikeysListResponse, AppDailyConversationsResponse, AppDailyEndUsersResponse, AppDetailResponse, AppListResponse, AppStatisticsResponse, AppTemplatesResponse, AppTokenCostsResponse, AppVoicesListResponse, CreateApiKeyResponse, GenerationIntroductionResponse, UpdateAppModelConfigResponse, UpdateAppSiteCodeResponse, UpdateOpenAIKeyResponse, ValidateOpenAIKeyResponse, WorkflowDailyConversationsResponse } from '@/models/app'
 import type { CommonResponse } from '@/models/common'
 import type { AppMode, ModelConfig } from '@/types/app'
 
@@ -17,7 +17,15 @@ export const fetchAppTemplates: Fetcher<AppTemplatesResponse, { url: string }> =
 }
 
 export const fetchAgentTypes = () => {
-  return get<any>(`apps/api-agent`)
+  return get<{ data: AgentTypes[] }>('apps/api-agent')
+}
+
+export const updateAgentTypes = (data: AgentTypes) => {
+  return put<any>('apps/api-agent', { body: { ...data } })
+}
+
+export const createAgentTypes = (data: AgentTypes) => {
+  return post<any>('apps/api-agent', { body: { ...data } })
 }
 
 export const createApp: Fetcher<AppDetailResponse, { name: string; icon: string; icon_background: string; mode: AppMode; description?: string; api_agent_id?: string; config?: ModelConfig }> = ({ name, icon, icon_background, mode, description, config, api_agent_id }) => {
