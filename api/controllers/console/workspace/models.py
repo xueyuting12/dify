@@ -257,6 +257,41 @@ class ModelProviderAvailableModelApi(Resource):
         })
 
 
+class AllUserAddModelApi(Resource):
+
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def post(self):
+
+
+        tenant_id = current_user.current_tenant_id
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('provider', type=str, required=True, nullable=False, location='json')
+        parser.add_argument('model', type=str, required=True, nullable=False, location='json')
+        parser.add_argument('model_type', type=str, required=True, nullable=False,
+                            choices=[mt.value for mt in ModelType], location='json')
+        parser.add_argument('credentials', type=dict, required=True, nullable=False, location='json')
+        args = parser.parse_args()
+
+        model_provider_service = ModelProviderService()
+
+        try:
+
+            model_provider_service.save_model_credentials(
+                tenant_id=tenant_id,
+                provider=args["provider"],
+                model=args["model"],
+                model_type=args["model_type"],
+                credentials=args["mode"]
+            )
+        except CredentialsValidateFailedError as ex:
+            raise ValueError(str(ex))
+
+        return {'result': 'success'}, 200
+
+
 api.add_resource(ModelProviderModelApi, '/workspaces/current/model-providers/<string:provider>/models')
 api.add_resource(ModelProviderModelCredentialApi,
                  '/workspaces/current/model-providers/<string:provider>/models/credentials')

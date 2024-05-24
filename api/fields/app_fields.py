@@ -152,7 +152,7 @@ app_site_fields = {
 api_agent_partial_fields = {
     'id': fields.String,
     'ai_agent_name': fields.String,
-    'desc': fields.String(attribute='desc_or_prompt'),
+    'desc': fields.String,
     'host': fields.String,
     'url': fields.String,
 }

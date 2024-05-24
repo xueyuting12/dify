@@ -307,6 +307,24 @@ class ApiAgentListApi(Resource):
 
         return app, 201
 
+    @setup_required
+    @login_required
+    @account_initialization_required
+    @marshal_with(api_agent_partial_fields)
+    def put(self):
+        """update app"""
+        parser = reqparse.RequestParser()
+        parser.add_argument('ai_agent_id', type=str, required=True, location='json')
+        parser.add_argument('ai_agent_name', type=str, required=True, location='json')
+        parser.add_argument('desc', type=str, location='json')
+        parser.add_argument('host', type=str, location='json')
+        parser.add_argument('url', type=str, location='json')
+        args = parser.parse_args()
+
+        app = ApiAgentRegisterService.update_app(args)
+
+        return app, 200
+
 
 api.add_resource(AppListApi, '/apps')
 api.add_resource(AppImportApi, '/apps/import')
