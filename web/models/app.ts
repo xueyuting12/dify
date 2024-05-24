@@ -129,3 +129,12 @@ export type AppVoicesListResponse = [{
   name: string
   value: string
 }]
+
+export type AgentTypes = {
+  id?: string
+  ai_agent_id?: string
+  ai_agent_name?: string
+  desc?: string
+  host?: string
+  url?: string
+}

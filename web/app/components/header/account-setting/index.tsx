@@ -6,6 +6,7 @@ import { GoldCoin } from '../../base/icons/src/vender/solid/FinanceAndECommerce'
 import { GoldCoin as GoldCoinOutLine } from '../../base/icons/src/vender/line/financeAndECommerce'
 import AccountPage from './account-page'
 import MembersPage from './members-page'
+import CustomAgentPage from './custom-agent-page'
 import IntegrationsPage from './Integrations-page'
 import LanguagePage from './language-page'
 import ApiBasedExtensionPage from './api-based-extension-page'
@@ -22,6 +23,7 @@ import {
 import { Database03 as Database03Solid } from '@/app/components/base/icons/src/vender/solid/development'
 import { User01, Users01 } from '@/app/components/base/icons/src/vender/line/users'
 import { User01 as User01Solid, Users01 as Users01Solid } from '@/app/components/base/icons/src/vender/solid/users'
+import { CustomRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 import { Globe01 } from '@/app/components/base/icons/src/vender/line/mapsAndTravel'
 import { AtSign, XClose } from '@/app/components/base/icons/src/vender/line/general'
 import { CubeOutline } from '@/app/components/base/icons/src/vender/line/shapes'
@@ -72,6 +74,12 @@ export default function AccountSetting({
         name: t('common.settings.members'),
         icon: <Users01 className={iconClassName} />,
         activeIcon: <Users01Solid className={iconClassName} />,
+      },
+      {
+        key: 'custom-agent',
+        name: t('common.settings.customAgent'),
+        icon: <CustomRobote className={iconClassName} />,
+        activeIcon: <CustomRobote className={iconClassName} />,
       },
       {
         // Use key false to hide this item
@@ -207,6 +215,7 @@ export default function AccountSetting({
           <div className='px-4 sm:px-8 pt-2'>
             {activeMenu === 'account' && <AccountPage />}
             {activeMenu === 'members' && <MembersPage />}
+            {activeMenu === 'custom-agent' && <CustomAgentPage />}
             {activeMenu === 'billing' && <BillingPage />}
             {activeMenu === 'integrations' && <IntegrationsPage />}
             {activeMenu === 'language' && <LanguagePage />}
