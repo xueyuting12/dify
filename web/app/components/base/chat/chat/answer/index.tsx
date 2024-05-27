@@ -165,7 +165,9 @@ const Answer: FC<AnswerProps> = ({
             {
               content && !hasAgentThoughts && (
                 <>
-                  <BasicContent item={item} />
+                  <div className={`${quoteDocLinks.length ? '' : 'mb-4'}`}>
+                    <BasicContent item={item} />
+                  </div>
                   {
                     quoteDocLinks.length
                       ? <div className='mt-4 mb-3'>

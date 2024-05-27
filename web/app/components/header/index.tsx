@@ -75,6 +75,7 @@ const Header = () => {
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
           <ScheduleNav className={navClassName}/>
+          {/* <ChatTaskNav className={navClassName} /> */}
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
@@ -103,6 +104,7 @@ const Header = () => {
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
           <ScheduleNav className={navClassName}/>
+          {/* <ChatTaskNav className={navClassName} /> */}
         </div>
       )}
     </div>

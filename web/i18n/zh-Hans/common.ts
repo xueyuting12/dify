@@ -114,6 +114,7 @@ const translation = {
     newDataset: '创建知识库',
     tools: '工具',
     schedule: '编排',
+    chatTask: '聊天任务',
   },
   userProfile: {
     settings: '设置',

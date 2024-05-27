@@ -105,6 +105,12 @@ export function format(text: string) {
   return res.replaceAll('\n', '<br/>').replaceAll('```', '')
 }
 
+const isValidURL = (str: string) => {
+  // 正则表达式匹配完整的URL
+  const apiPathPattern = /^(https?:\/\/)?((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]|localhost|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::\d+)?(\/[^\s]*)?$/i
+  return apiPathPattern.test(str)
+}
+
 const handleStream = (
   response: Response,
   onData: IOnData,
@@ -176,18 +182,16 @@ const handleStream = (
               isFirstMessage = false
             }
             else if (bufferObj.event === 'quote') {
-              if (bufferObj.documentList.length) {
-                onData('', isFirstMessage, {
-                  conversationId: bufferObj.conversation_id,
-                  taskId: bufferObj.task_id,
-                  messageId: bufferObj.id,
-                }, {
-                  quoteList: bufferObj.documentList,
-                  cost: bufferObj.cost,
-                  process: '',
-                })
-                isFirstMessage = false
-              }
+              onData('', isFirstMessage, {
+                conversationId: bufferObj.conversation_id,
+                taskId: bufferObj.task_id,
+                messageId: bufferObj.id,
+              }, {
+                quoteList: bufferObj.documentList,
+                cost: bufferObj.cost,
+                process: '',
+              })
+              isFirstMessage = false
             }
             else if (bufferObj.event === 'process') {
               onData('', isFirstMessage, {
@@ -295,7 +299,11 @@ const baseFetch = <T>(
   }
 
   const urlPrefix = isPublicAPI ? PUBLIC_API_PREFIX : API_PREFIX
-  let urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
+  let urlWithPrefix = ''
+  if (isValidURL(url))
+    urlWithPrefix = url
+  else
+    urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
 
   const { method, params, body } = options
   // handle query

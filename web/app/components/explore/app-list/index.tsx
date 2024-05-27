@@ -234,18 +234,16 @@ const Apps = ({
 
           {filteredList.map((app: any) => {
             return (
-              <>
-                <AppCard
-                  key={app.app_id}
-                  isExplore={pageType === PageType.EXPLORE}
-                  app={app}
-                  canCreate={hasEditPermission}
-                  onCreate={() => {
-                    setCurrApp(app)
-                    setIsShowCreateModal(true)
-                  }}
-                />
-              </>
+              <AppCard
+                key={app.app_id}
+                isExplore={pageType === PageType.EXPLORE}
+                app={app}
+                canCreate={hasEditPermission}
+                onCreate={() => {
+                  setCurrApp(app)
+                  setIsShowCreateModal(true)
+                }}
+              />
             )
           },
           )}
