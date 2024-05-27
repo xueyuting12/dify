@@ -62,6 +62,7 @@ class ApiAgentRegisterService:
         api_agent.desc = args.get('desc', '')
         api_agent.host = args.get('host')
         api_agent.url = args.get('url')
+        api_agent.suggested_questions = args.get('suggested_questions')
         db.session.commit()
 
         return api_agent
