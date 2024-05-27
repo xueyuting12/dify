@@ -49,7 +49,7 @@ const CustomEditModal: FC<CustomEditModalProps> = ({
   const handleSave = async () => {
     let suggested_questions = ''
     if (tempValue)
-      suggested_questions = JSON.stringify({ [tempValue]: tempSuggestedQuestions })
+      suggested_questions = JSON.stringify({ [tempValue]: tempSuggestedQuestions.filter(item => item) })
 
     if (localeData?.id) {
       await updateAgentTypes({
