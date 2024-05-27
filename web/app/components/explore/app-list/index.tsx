@@ -91,6 +91,7 @@ const Apps = ({
   )
 
   const filteredList = useMemo(() => {
+    // console.log(agentList.data)
     return agentList.data
   }, [agentList])
 
@@ -235,7 +236,7 @@ const Apps = ({
           {filteredList.map((app: any) => {
             return (
               <AppCard
-                key={app.app_id}
+                key={app.id}
                 isExplore={pageType === PageType.EXPLORE}
                 app={app}
                 canCreate={hasEditPermission}

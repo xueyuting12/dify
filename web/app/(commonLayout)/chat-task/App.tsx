@@ -1,10 +1,15 @@
 'use client'
+
 import { useEffect } from 'react'
 import { fetchChatGroup } from '@/service/chatTask'
 
 const App = () => {
+  const getData = async () => {
+    await fetchChatGroup()
+  }
+
   useEffect(() => {
-    fetchChatGroup()
+    getData()
   })
 
   return (

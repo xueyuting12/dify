@@ -137,4 +137,5 @@ export type AgentTypes = {
   desc?: string
   host?: string
   url?: string
+  suggested_questions?: string
 }

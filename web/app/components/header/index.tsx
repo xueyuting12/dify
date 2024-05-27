@@ -8,6 +8,7 @@ import HeaderBillingBtn from '../billing/header-billing-btn'
 import AccountDropdown from './account-dropdown'
 import AppNav from './app-nav'
 import DatasetNav from './dataset-nav'
+import ChatTaskNav from './chat-task-nav'
 import EnvNav from './env-nav'
 import ExploreNav from './explore-nav'
 import ToolsNav from './tools-nav'
@@ -75,7 +76,7 @@ const Header = () => {
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
           <ScheduleNav className={navClassName}/>
-          {/* <ChatTaskNav className={navClassName} /> */}
+          <ChatTaskNav className={navClassName} />
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
@@ -104,7 +105,7 @@ const Header = () => {
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
           <ScheduleNav className={navClassName}/>
-          {/* <ChatTaskNav className={navClassName} /> */}
+          <ChatTaskNav className={navClassName} />
         </div>
       )}
     </div>
