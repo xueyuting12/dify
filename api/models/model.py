@@ -1357,6 +1357,7 @@ class ApiAgentRegister(db.Model):
     url = db.Column(db.String(255), nullable=False)
     ai_agent_name = db.Column(db.String(255), nullable=False)
     desc = db.Column(db.Text, nullable=True)
+    suggested_questions = db.Column(db.Text, nullable=True)
 
 
 class ApiAgentApp(db.Model):

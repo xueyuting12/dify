@@ -88,11 +88,29 @@ class LoginApi(Resource):
             model_provider_service = ModelProviderService()
 
             try:
+                # 大模型
                 model_provider_service.save_model_credentials(
                     tenant_id=tenant.id,
                     provider=get_env('PROVIDER'),
                     model=get_env('LLM_MODEL'),
                     model_type=get_env('LLM_MODEL_TYPE'),
+                    credentials={"mode": get_env('LLM_MODE'),
+                                 "context_size": get_env('LLM_CONTEXT_SIZE'),
+                                 "max_tokens_to_sample": get_env('LLM_MAX_TOKENS_TO_SAMPLE'),
+                                 "function_calling_type": get_env('LLM_FUNCTION_CALLING_TYPE'),
+                                 "stream_function_calling": get_env('LLM_STREAM_FUNCTION_CALLING'),
+                                 "vision_support": get_env('LLM_VISION_SUPPORT'),
+                                 "stream_mode_delimiter": get_env('LLM_STREAM_MODE_DELIMITER'),
+                                 "api_key": get_env('LLM_API_KEY'),
+                                 "endpoint_url": get_env('LLM_ENDPOINT_YRL')
+                                 }
+                )
+                # 只是库模型
+                model_provider_service.save_model_credentials(
+                    tenant_id=tenant.id,
+                    provider=get_env('PROVIDER'),
+                    model=get_env('LLM_TEXT_MODEL'),
+                    model_type=get_env('LLM_TEXT_MODEL_TYPE'),
                     credentials={"mode": get_env('LLM_MODE'),
                                  "context_size": get_env('LLM_CONTEXT_SIZE'),
                                  "max_tokens_to_sample": get_env('LLM_MAX_TOKENS_TO_SAMPLE'),
