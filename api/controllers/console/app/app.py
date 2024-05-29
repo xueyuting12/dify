@@ -302,6 +302,7 @@ class ApiAgentListApi(Resource):
         parser.add_argument('host', type=str, location='json')
         parser.add_argument('url', type=str, location='json')
         parser.add_argument('suggested_questions', type=str, location='json')
+        parser.add_argument('collection', type=str, location='json')
         args = parser.parse_args()
 
         app = ApiAgentRegisterService.create_app(args)
@@ -321,6 +322,7 @@ class ApiAgentListApi(Resource):
         parser.add_argument('host', type=str, location='json')
         parser.add_argument('url', type=str, location='json')
         parser.add_argument('suggested_questions', type=str, location='json')
+        parser.add_argument('collection', type=str, location='json')
         args = parser.parse_args()
 
         app = ApiAgentRegisterService.update_app(args)
