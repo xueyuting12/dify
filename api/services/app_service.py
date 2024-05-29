@@ -21,6 +21,7 @@ from extensions.ext_database import db
 from models.account import Account
 from models.model import App, AppMode, AppModelConfig, ApiAgentApp
 from models.tools import ApiToolProvider
+from services.api_agent_service import ApiAgentRegisterService
 from services.tag_service import TagService
 from services.workflow_service import WorkflowService
 
@@ -46,6 +47,8 @@ class AppService:
             filters.append(App.mode == AppMode.AGENT_CHAT.value)
         elif args['mode'] == 'channel':
             filters.append(App.mode == AppMode.CHANNEL.value)
+        elif args['mode'] == 'custom-agent':
+            filters.append(App.mode == AppMode.CUSTOM_AGENT.value)
 
         if 'name' in args and args['name']:
             name = args['name'][:30]
@@ -126,6 +129,18 @@ class AppService:
         db.session.add(app)
         db.session.flush()
 
+        if app_mode.value == "custom-agent":
+            api_agent_id = args["api_agent_id"]
+            api_agent = ApiAgentRegisterService.get_api_agent(api_agent_id)
+            suggested_questions = api_agent.suggested_questions
+            if suggested_questions:
+                suggested_questions_dict = json.loads(suggested_questions)
+                for key, value in suggested_questions_dict.items():
+                    default_model_config['opening_statement'] = key
+                    default_model_config['suggested_questions'] = json.dumps(value)
+            api_agent_app = ApiAgentApp(api_agent_id=api_agent_id, app_id=app.id)
+            db.session.add(api_agent_app)
+
         if default_model_config:
             app_model_config = AppModelConfig(**default_model_config)
             app_model_config.app_id = app.id
@@ -133,10 +148,6 @@ class AppService:
             db.session.flush()
 
             app.app_model_config_id = app_model_config.id
-        if app_mode.value == "custom-agent":
-            api_agent_id = args["api_agent_id"]
-            api_agent_app = ApiAgentApp(api_agent_id=api_agent_id, app_id=app.id)
-            db.session.add(api_agent_app)
 
         db.session.commit()
 

@@ -22,6 +22,7 @@ import { NEED_REFRESH_APP_LIST_KEY } from '@/config'
 // import { useAppContext } from '@/context/app-context'
 // import { getRedirection } from '@/utils/app-redirection'
 import { createApp, fetchAgentTypes } from '@/service/apps'
+import { fetchInstalledAppList as doFetchInstalledAppList } from '@/service/explore'
 
 type AppsProps = {
   pageType?: PageType
@@ -40,7 +41,7 @@ const Apps = ({
   const { t } = useTranslation()
   // const { isCurrentWorkspaceManager } = useAppContext()
   // const { push } = useRouter()
-  const { hasEditPermission } = useContext(ExploreContext)
+  const { hasEditPermission, setInstalledApps } = useContext(ExploreContext)
   const allCategoriesEn = t('explore.apps.allCategories', { lng: 'en' })
 
   const [currentType, setCurrentType] = useState<string>('')
@@ -78,6 +79,7 @@ const Apps = ({
           name: item.ai_agent_name,
           icon_background: '#FFEAD5',
           description: item.desc,
+          mode: 'custom-agent',
         }
         return item
       })
@@ -89,6 +91,7 @@ const Apps = ({
   )
 
   const filteredList = useMemo(() => {
+    // console.log(agentList.data)
     return agentList.data
   }, [agentList])
 
@@ -169,8 +172,8 @@ const Apps = ({
         onSuccess()
       localStorage.setItem(NEED_REFRESH_APP_LIST_KEY, '1')
       // getRedirection(isCurrentWorkspaceManager, app, push)
-      // const { installed_apps }: any = await doFetchInstalledAppList()
-      // setInstalledApps(installed_apps)
+      const { installed_apps }: any = await doFetchInstalledAppList()
+      setInstalledApps(installed_apps)
     }
     catch (e) {
       Toast.notify({ type: 'error', message: t('app.newApp.appCreateFailed') })
@@ -232,18 +235,16 @@ const Apps = ({
 
           {filteredList.map((app: any) => {
             return (
-              <>
-                <AppCard
-                  key={app.app_id}
-                  isExplore={pageType === PageType.EXPLORE}
-                  app={app}
-                  canCreate={hasEditPermission}
-                  onCreate={() => {
-                    setCurrApp(app)
-                    setIsShowCreateModal(true)
-                  }}
-                />
-              </>
+              <AppCard
+                key={app.id}
+                isExplore={pageType === PageType.EXPLORE}
+                app={app}
+                canCreate={hasEditPermission}
+                onCreate={() => {
+                  setCurrApp(app)
+                  setIsShowCreateModal(true)
+                }}
+              />
             )
           },
           )}

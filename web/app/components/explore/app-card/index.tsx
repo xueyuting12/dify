@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/20/solid'
 import Button from '../../base/button'
 import type { App } from '@/models/explore'
 import AppIcon from '@/app/components/base/app-icon'
-import { AiText, ChatBot, CuteRobote } from '@/app/components/base/icons/src/vender/solid/communication'
+import { AiText, ChatBot, CustomRobote, CuteRobote } from '@/app/components/base/icons/src/vender/solid/communication'
 import { Route } from '@/app/components/base/icons/src/vender/solid/mapsAndTravel'
 export type AppCardProps = {
   app: App
@@ -36,6 +36,9 @@ const AppCard = ({
             )}
             {appBasicInfo.mode === 'chat' && (
               <ChatBot className='w-3 h-3 text-[#1570EF]' />
+            )}
+            {appBasicInfo.mode === 'custom-agent' && (
+              <CustomRobote className='w-3 h-3 text-rose-600' />
             )}
             {appBasicInfo.mode === 'completion' && (
               <AiText className='w-3 h-3 text-[#0E9384]' />

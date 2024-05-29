@@ -3,7 +3,6 @@ import { type Agent, IHeaderType } from '@/models/schedule'
 import { IAgentTypeEnum } from '@/models/node'
 
 export const initAgentList = (list: Agent[]) => {
-  console.log('initAgentList', list)
   const newList = list.map((l) => {
     if (l.multi_version && l.multi_version.length > 0)
       return { ...l, current_version: l.multi_version[0].version }

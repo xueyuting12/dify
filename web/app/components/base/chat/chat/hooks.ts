@@ -314,6 +314,14 @@ export const useChat = (
         async onCompleted(hasError?: boolean) {
           handleResponding(false)
 
+          responseItem.process = ''
+          updateCurrentQA({
+            responseItem,
+            questionId,
+            placeholderAnswerId,
+            questionItem,
+          })
+
           if (hasError)
             return
 
@@ -372,6 +380,7 @@ export const useChat = (
                 }
               }
             })
+
             handleUpdateChatList(newChatList)
           }
           if (config?.suggested_questions_after_answer?.enabled && !hasStopResponded.current && onGetSuggestedQuestions) {
@@ -424,7 +433,6 @@ export const useChat = (
         onMessageEnd: (messageEnd) => {
           if (messageEnd.metadata?.annotation_reply) {
             responseItem.id = messageEnd.id
-            responseItem.process = ''
             responseItem.annotation = ({
               id: messageEnd.metadata.annotation_reply.id,
               authorName: messageEnd.metadata.annotation_reply.account.name,
@@ -444,7 +452,6 @@ export const useChat = (
             return
           }
           responseItem.citation = messageEnd.metadata?.retriever_resources || []
-          responseItem.process = ''
           const newListWithAnswer = produce(
             chatListRef.current.filter(item => item.id !== responseItem.id && item.id !== placeholderAnswerId),
             (draft) => {
