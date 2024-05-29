@@ -131,7 +131,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
             if api_agent:
                 host = api_agent.host
                 uri = api_agent.url
-                collection = api_agent.url
+                collection = api_agent.collection
                 url = host + uri
                 headers = {
                     'Content-Type': "application/json",
