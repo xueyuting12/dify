@@ -1358,6 +1358,7 @@ class ApiAgentRegister(db.Model):
     ai_agent_name = db.Column(db.String(255), nullable=False)
     desc = db.Column(db.Text, nullable=True)
     suggested_questions = db.Column(db.Text, nullable=True)
+    collection = db.Column(db.String(255), nullable=False)
 
 
 class ApiAgentApp(db.Model):

@@ -131,6 +131,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
             if api_agent:
                 host = api_agent.host
                 uri = api_agent.url
+                collection = api_agent.url
                 url = host + uri
                 headers = {
                     'Content-Type': "application/json",
@@ -140,7 +141,7 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
                 data_body = {
                     "appId": app_id,
                     "conversationId": args["conversation_id"],
-                    "collection": get_env('CUSTOM_AGENT_COLLECTION'),
+                    "collection": collection,
                     "stream": True,
                     "messages": [
                         {
