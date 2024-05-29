@@ -58,6 +58,7 @@ const CustomEditModal: FC<CustomEditModalProps> = ({
         host: localeData.host,
         url: localeData.url,
         desc: localeData.desc,
+        collection: localeData.collection,
         suggested_questions,
       })
     }
@@ -118,6 +119,17 @@ const CustomEditModal: FC<CustomEditModalProps> = ({
           onChange={e => handleDataChange('desc', e.target.value)}
           className='block px-3 w-full h-9 bg-gray-100 rounded-lg text-sm text-gray-900 outline-none appearance-none'
           placeholder={t('common.customAgent.descPlaceholder') || ''}
+        />
+      </div>
+      <div className='py-2'>
+        <div className='leading-9 text-sm font-medium text-gray-900'>
+          {t('common.customAgent.collection')}
+        </div>
+        <input
+          value={localeData?.collection || ''}
+          onChange={e => handleDataChange('collection', e.target.value)}
+          className='block px-3 w-full h-9 bg-gray-100 rounded-lg text-sm text-gray-900 outline-none appearance-none'
+          placeholder={t('common.customAgent.collectionPlaceholder') || ''}
         />
       </div>
       <div className='py-2'>

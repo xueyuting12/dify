@@ -143,6 +143,7 @@ export function Markdown(props: { content: string; className?: string }) {
               )
           },
           img({ src, alt, ...props }) {
+            console.log(src, alt)
             return (
               // eslint-disable-next-line @next/next/no-img-element
               <img

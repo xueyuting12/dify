@@ -89,13 +89,13 @@ const NormalForm = () => {
       const res = await login({
         url: '/login',
         body: {
-          username: username,
+          username,
           password,
           remember_me: true,
         },
       })
       localStorage.setItem('console_token', res.data)
-      router.replace('/apps')
+      router.replace('/explore/apps')
     }
     finally {
       setIsLoading(false)
