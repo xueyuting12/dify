@@ -155,7 +155,8 @@ api_agent_partial_fields = {
     'desc': fields.String,
     'host': fields.String,
     'url': fields.String,
-    'suggested_questions': fields.String
+    'suggested_questions': fields.String,
+    'collection': fields.String
 }
 
 api_agent_pagination_fields = {
