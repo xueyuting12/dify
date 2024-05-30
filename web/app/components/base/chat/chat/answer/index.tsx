@@ -81,10 +81,8 @@ const Answer: FC<AnswerProps> = ({
     if (!responding)
       getContentWidth()
   }, [responding])
-  // console.log('item', item)
 
   const quoteDocLinks = useMemo(() => {
-    //  Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
     return Array.from(new Set(item.quote_list?.map(attr => attr.source)))
       .map((source) => {
         return item.quote_list?.find(item => item.source === source)
@@ -160,6 +158,13 @@ const Answer: FC<AnswerProps> = ({
               responding && !content && !hasAgentThoughts && (
                 <div className='flex items-center justify-center w-6 h-5'>
                   <LoadingAnim type='text' />
+                </div>
+              )
+            }
+            {
+              !responding && !content && !hasAgentThoughts && (
+                <div className='flex items-center justify-center w-120 h-5'>
+                  ❗️出了点小问题，晚点再来问问我吧～
                 </div>
               )
             }
