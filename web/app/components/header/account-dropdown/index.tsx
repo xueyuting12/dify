@@ -6,6 +6,7 @@ import { useContext } from 'use-context-selector'
 import { Menu, Transition } from '@headlessui/react'
 import AccountAbout from '../account-about'
 import WorkplaceSelector from './workplace-selector'
+import WorkspaceEditModal from './edit-modal'
 import I18n from '@/context/i18n'
 import Avatar from '@/app/components/base/avatar'
 import { logout } from '@/service/common'
@@ -13,6 +14,7 @@ import { useAppContext } from '@/context/app-context'
 import { ChevronDown } from '@/app/components/base/icons/src/vender/line/arrows'
 import { LogOut01 } from '@/app/components/base/icons/src/vender/line/general'
 import { useModalContext } from '@/context/modal-context'
+
 export type IAppSelecotr = {
   isMobile: boolean
 }
@@ -24,6 +26,7 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
   `
   const router = useRouter()
   const [aboutVisible, setAboutVisible] = useState(false)
+  const [openAddSpace, setOpenAddSpace] = useState(false)
 
   const { locale } = useContext(I18n)
   const { t } = useTranslation()
@@ -87,8 +90,8 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
                     </div>
                   </Menu.Item>
                   <div className='px-1 py-1'>
-                    <div className='mt-2 px-3 text-xs font-medium text-gray-500'>{t('common.userProfile.workspace')}</div>
-                    <WorkplaceSelector />
+                    <div className='px-3 text-xs font-medium text-gray-500 grow'>{t('common.userProfile.workspace')}</div>
+                    <WorkplaceSelector onCreate={() => setOpenAddSpace(true)} />
                   </div>
                   <div className="px-1 py-1">
                     <Menu.Item>
@@ -158,6 +161,7 @@ export default function AppSelector({ isMobile }: IAppSelecotr) {
       {
         aboutVisible && <AccountAbout onCancel={() => setAboutVisible(false)} langeniusVersionInfo={langeniusVersionInfo} />
       }
+      <WorkspaceEditModal showModal={openAddSpace} onCancel={() => setOpenAddSpace(false)} />
     </div >
   )
 }

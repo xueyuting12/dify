@@ -9,6 +9,7 @@ import { useWorkspacesContext } from '@/context/workspace-context'
 import { ChevronRight } from '@/app/components/base/icons/src/vender/line/arrows'
 import { Check } from '@/app/components/base/icons/src/vender/line/general'
 import { ToastContext } from '@/app/components/base/toast'
+import { Add } from '@/app/components/base/icons/src/vender/line/layout'
 
 const itemClassName = `
   flex items-center px-3 py-2 h-10 cursor-pointer
@@ -23,7 +24,7 @@ const itemCheckClassName = `
   shrink-0 w-4 h-4 text-primary-600
 `
 
-const WorkplaceSelector = () => {
+const WorkplaceSelector = ({ onCreate }: { onCreate: () => void }) => {
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
   const { workspaces } = useWorkspacesContext()
@@ -76,6 +77,10 @@ const WorkplaceSelector = () => {
                 )}
               >
                 <div className="px-1 py-1">
+                  <div className={`${itemClassName} text-sm text-[#374151]`} onClick={onCreate}>
+                    <Add className='h-5 w-5 mr-3 text-[#1b65f3]' />
+                    {t('common.userProfile.createWorkspace')}
+                  </div>
                   {
                     workspaces.map(workspace => (
                       <div className={itemClassName} key={workspace.id} onClick={() => handleSwitchWorkspace(workspace.id)}>
