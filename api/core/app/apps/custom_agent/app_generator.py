@@ -153,7 +153,16 @@ class CustomAgentAppGenerator(MessageBasedAppGenerator):
                     ]
                 }
                 start_time = time.time()
-                res = requests.post(url, data=json.dumps(data_body), headers=headers, stream=True)
+                try:
+                    res = requests.post(url, data=json.dumps(data_body), headers=headers, stream=True)
+                except Exception as e:
+                    error_info = {"event": "message", "id": message_id,
+                                  "task_id": "",
+                                  "message_id": message_id,
+                                  "answer": "累了、困了、喝东鹏特饮", "created_at": 1715759893,
+                                  "conversation_id": args["conversation_id"]}
+                    yield f"data: {error_info} \n\n"
+                    return
                 for line in res.iter_lines():
                     _mesage_info = {"event": "message", "id": message_id,
                                     "task_id": "",
