@@ -1,7 +1,46 @@
-import { get } from './base'
+import { get, post } from './base'
 
 const originUrl = 'http://10.7.0.240:9092/'
 
+export type IGroupProps = {
+  groupName: string
+  groupId: string
+}
+
+export type IGroupPropsUnder = {
+  group_name: string
+  group_id: string
+}
+
+export type IChatItem = {
+  groupId?: string
+  groupName?: string
+  msgContent?: string
+  msgType?: 'JOIN_GROUP' | 'TEXT' | 'IMAGE' | 'VOICE' | 'SHARING' | 'VIDEO'
+  senderId?: string
+  senderName?: string
+}
+
+export type ITaskItem = {
+  taskId: number
+  groupId: string
+  groupName: string
+  taskType: string
+  taskName: string
+  taskStatus: string
+  taskRemark: string
+  senderId: string
+  senderName: string
+}
+
 export const fetchChatGroup = () => {
-  return get<any>(`${originUrl}api/v1/msg/group/list`)
+  return get<IGroupProps[]>(`${originUrl}ai-ass/api/v1/msg/group/list`)
+}
+
+export const fetchChatList = (groupData: IGroupPropsUnder) => {
+  return post<IChatItem[]>(`${originUrl}ai-ass/api/v1/msg/detail/list`, { body: groupData })
+}
+
+export const fetchTaskList = (groupData: IGroupPropsUnder) => {
+  return post<ITaskItem[]>(`${originUrl}ai-ass/api/v1/msg/task/list`, { body: groupData })
 }

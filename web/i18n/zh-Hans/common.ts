@@ -164,6 +164,8 @@ const translation = {
     hostPlaceholder: '请输入Host',
     url: 'URL',
     urlPlaceholder: '请输入URL',
+    collection: '知识库',
+    collectionPlaceholder: '请输入知识库',
     desc: '描述',
     descPlaceholder: '请输入Agent描述',
     openingStatement: '开场白',

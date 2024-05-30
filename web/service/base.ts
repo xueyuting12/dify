@@ -23,7 +23,7 @@ const ContentType = {
 const baseOptions = {
   method: 'GET',
   mode: 'cors',
-  credentials: 'include', // always send cookies、HTTP Basic authentication.
+  credentials: 'include', // always send cookies、HTTP Basic authentication. omit
   headers: new Headers({
     'Content-Type': ContentType.json,
   }),
@@ -300,10 +300,13 @@ const baseFetch = <T>(
 
   const urlPrefix = isPublicAPI ? PUBLIC_API_PREFIX : API_PREFIX
   let urlWithPrefix = ''
-  if (isValidURL(url))
+  if (isValidURL(url)) {
     urlWithPrefix = url
-  else
+    options.credentials = 'omit'
+  }
+  else {
     urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
+  }
 
   const { method, params, body } = options
   // handle query
@@ -324,7 +327,6 @@ const baseFetch = <T>(
   if (body && bodyStringify)
     options.body = JSON.stringify(body)
 
-  // Handle timeout
   return Promise.race([
     new Promise((resolve, reject) => {
       setTimeout(() => {

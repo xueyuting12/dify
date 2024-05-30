@@ -81,6 +81,7 @@ const Answer: FC<AnswerProps> = ({
     if (!responding)
       getContentWidth()
   }, [responding])
+  // console.log('item', item)
 
   const quoteDocLinks = useMemo(() => {
     //  Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
@@ -165,7 +166,7 @@ const Answer: FC<AnswerProps> = ({
             {
               content && !hasAgentThoughts && (
                 <>
-                  <div className={`${quoteDocLinks.length ? '' : 'mb-4'}`}>
+                  <div className={`${(quoteDocLinks.length === 0 && item.cost) ? 'mb-4' : ''}`}>
                     <BasicContent item={item} />
                   </div>
                   {
