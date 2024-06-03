@@ -69,7 +69,7 @@ const ChatSetting = () => {
   }
 
   return (
-    <div className='py-1 px-3'>
+    <div className='py-1 px-3 h-full overflow-auto'>
       <div>
         <div className='leading-9 text-sm font-medium text-gray-900'>
           {t('tools.builtInPromptTitle')}
