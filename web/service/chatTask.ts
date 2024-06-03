@@ -1,6 +1,6 @@
-import { get, post } from './base'
+import { get, post, put } from './base'
 
-const originUrl = 'http://10.7.0.240:9092/'
+const originUrl = 'http://10.7.0.240:9093/'
 
 export type IGroupProps = {
   groupName: string
@@ -23,14 +23,14 @@ export type IChatItem = {
 
 export type ITaskItem = {
   taskId: number
-  groupId: string
-  groupName: string
-  taskType: string
-  taskName: string
-  taskStatus: string
-  taskRemark: string
-  senderId: string
-  senderName: string
+  groupId?: string
+  groupName?: string
+  taskType?: string
+  taskName?: string
+  taskStatus?: string
+  taskRemark?: string
+  senderId?: string
+  senderName?: string
 }
 
 export const fetchChatGroup = () => {
@@ -43,4 +43,24 @@ export const fetchChatList = (groupData: IGroupPropsUnder) => {
 
 export const fetchTaskList = (groupData: IGroupPropsUnder) => {
   return post<ITaskItem[]>(`${originUrl}ai-ass/api/v1/msg/task/list`, { body: groupData })
+}
+
+export const fetchCurrentLLM = () => {
+  return get<string>(`${originUrl}ai-ass/api/v1/msg/llm`)
+}
+
+export const fetchLLMList = () => {
+  return get<string[]>(`${originUrl}ai-ass/api/v1/msg/llm/list`)
+}
+
+export const updateLLM = (llm: string) => {
+  return put(`${originUrl}ai-ass/api/v1/msg/llm?req=${llm}`)
+}
+
+export const fetchPrompt = () => {
+  return get<string>(`${originUrl}ai-ass/api/v1/msg/prompt`)
+}
+
+export const updatePrompt = (content: string) => {
+  return put<string>(`${originUrl}ai-ass/api/v1/msg/prompt`, { body: { content } })
 }

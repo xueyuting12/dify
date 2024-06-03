@@ -164,7 +164,7 @@ const Answer: FC<AnswerProps> = ({
             {
               !responding && !content && !hasAgentThoughts && (
                 <div className='flex items-center justify-center w-120 h-5'>
-                  ❗️出了点小问题，晚点再来问问我吧～
+                  ❗️流量高峰，晚点再来问问吧～
                 </div>
               )
             }

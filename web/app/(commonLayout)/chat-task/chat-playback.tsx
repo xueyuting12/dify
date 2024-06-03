@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import ChatItem from './chat-item'
 import type { IChatItem } from '@/service/chatTask'
 
@@ -11,9 +11,39 @@ type IChatPlayback = {
 const ChatPlayback = ({
   list,
 }: IChatPlayback) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const userScrolledRef = useRef(false)
+
+  const handleScrolltoBottom = useCallback(() => {
+    if (containerRef.current && !userScrolledRef.current)
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+  }, [])
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (container) {
+      const setUserScrolled = () => {
+        if (container)
+          userScrolledRef.current = container.scrollHeight - container.scrollTop >= container.clientHeight + 1
+      }
+      container.addEventListener('scroll', setUserScrolled)
+      return () => container.removeEventListener('scroll', setUserScrolled)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      requestAnimationFrame(() => {
+        handleScrolltoBottom()
+        // handleWindowResize()
+      })
+    }
+  })
+
   return (
-    <div>
-      <img src='http://10.7.0.240:3000/cass/20240524/240524-172250.png' />
+    <div
+      ref={containerRef}
+      className='h-full overflow-auto px-4 py-2'>
       { list?.length
         ? list.map((item, index) => {
           if (item.msgType === 'JOIN_GROUP')
