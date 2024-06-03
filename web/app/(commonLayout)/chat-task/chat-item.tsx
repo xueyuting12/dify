@@ -52,7 +52,7 @@ const ChatItem: FC<ChatItemProps> = ({
 
   const render = (item: IChatItem) => {
     if (item.msgType === 'IMAGE')
-      return <BasicContent msg={`![聊天](${item.msgContent})`} />
+      return <BasicContent msg={`![聊天](${item.msgContent?.replace('cass:sy23dfki@', '')})`} />
     else if (item.msgType === 'TEXT')
       return <BasicContent msg={item.msgContent || ''} />
     else
