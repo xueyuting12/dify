@@ -8,8 +8,8 @@ import { SimpleSelect } from '@/app/components/base/select'
 import Button from '@/app/components/base/button'
 import { fetchCurrentLLM, fetchLLMList, fetchPrompt, updateLLM, updatePrompt } from '@/service/chatTask'
 
-// const intervalTimeList = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-const intervalTimeList = ['2', '4', '6', '8', '10']
+const intervalTimeList = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+// const intervalTimeList = ['2', '4', '6', '8', '10']
 let isLLMChange = false
 let isPromptChange = false
 
