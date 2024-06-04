@@ -22,6 +22,7 @@ const App = () => {
   const [taskList, setTaskList] = useState<ITaskItem[]>([])
   const [canStop, setCanStop] = useState(false)
   const userIntervalRef = useRef<number | null>(null)
+  const [openSettingDrawer, setOpenSettingDrawer] = useState(false)
 
   const updateInfo = async (target: IGroupInfo) => {
     if (!target)
@@ -58,15 +59,15 @@ const App = () => {
       group_id: target.value as string,
       group_name: target.name,
     })
-    handleIntervalStop()
-    const locInterval = localStorage.getItem('CHAT_TASK_INTERVAL') || '3'
-    userIntervalRef.current = setInterval(() => {
-      updateInfo({
-        group_id: target.value as string,
-        group_name: target.name,
-      })
-    }, parseInt(locInterval) * 1000) as unknown as number
-    setCanStop(true)
+    // handleIntervalStop()
+    // const locInterval = localStorage.getItem('CHAT_TASK_INTERVAL') || '3'
+    // userIntervalRef.current = setInterval(() => {
+    //   updateInfo({
+    //     group_id: target.value as string,
+    //     group_name: target.name,
+    //   })
+    // }, parseInt(locInterval) * 1000) as unknown as number
+    // setCanStop(true)
   }
 
   const getChatList = async () => {
@@ -88,31 +89,39 @@ const App = () => {
   return (
     <div className='flex flex-col h-full m-4 overflow-hidden' >
       <div className='flex-none flex h-12 w-full mb-2 bg-white p-1'>
-        <div className='w-[210px]'>
-          <SimpleSelect
-            items={groupList}
-            className='mt-0 w-40 bg-gray-50'
-            onSelect={onGroupChange}
-          />
+        <div className='grow'>
+          <div className='w-[210px]'>
+            <SimpleSelect
+              items={groupList}
+              className='mt-0 bg-gray-50'
+              onSelect={onGroupChange}
+            />
+          </div>
         </div>
-        <Button
+        {/* <Button
           className='!h-9 !text-sm !font-medium ml-4'
           type="warning"
           disabled={!canStop}
-          onClick={handleIntervalStop}>停止</Button>
-        {/* <Button>聊天回放</Button> */}
+          onClick={handleIntervalStop}>停止</Button> */}
+        <Button
+          onClick={() => { setOpenSettingDrawer(true) } }
+          type='primary'
+          className='!h-9 !text-sm !font-medium mr-4'>
+          设置
+        </Button>
       </div>
       <div className='flex-auto flex overflow-hidden'>
         <div className='flex-1 bg-white border mr-3 overflow-hidden'>
-          <ChatSetting />
+          <ChatPlayback fullList={chatList || []} />
         </div>
         <div className='flex-none bg-white w-2/6 border overflow-hidden'>
-          <ChatPlayback list={chatList || []} />
-        </div>
-        <div className='flex-1 bg-white border ml-3 overflow-hidden'>
           <ChatTask list={taskList || []} />
         </div>
+        <div className='flex-1 bg-white border ml-3 overflow-hidden'>
+          任务执行
+        </div>
       </div>
+      <ChatSetting showDrawer={openSettingDrawer} onClose={() => { setOpenSettingDrawer(false) }} />
     </div>
   )
 }

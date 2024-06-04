@@ -19,6 +19,7 @@ export type IChatItem = {
   msgType?: 'JOIN_GROUP' | 'TEXT' | 'IMAGE' | 'VOICE' | 'SHARING' | 'VIDEO'
   senderId?: string
   senderName?: string
+  msgTime?: string
 }
 
 export type ITaskItem = {
@@ -33,6 +34,15 @@ export type ITaskItem = {
   senderName?: string
 }
 
+export type IUpdateCurrentTask = {
+  replay_id: string
+  msg_id: string
+  model: string
+  prompt: string
+  group_id: string
+  group_name: string
+}
+
 export const fetchChatGroup = () => {
   return get<IGroupProps[]>(`${originUrl}ai-ass/api/v1/msg/group/list`)
 }
@@ -43,6 +53,14 @@ export const fetchChatList = (groupData: IGroupPropsUnder) => {
 
 export const fetchTaskList = (groupData: IGroupPropsUnder) => {
   return post<ITaskItem[]>(`${originUrl}ai-ass/api/v1/msg/task/list`, { body: groupData })
+}
+/**
+ * 获取当前消息生成的Task
+ * @param content
+ * @returns
+ */
+export const fetchCurrentTask = (content: IUpdateCurrentTask) => {
+  return post(`${originUrl}ai-ass/api/v1/msg/replay`, { body: { content } })
 }
 
 export const fetchCurrentLLM = () => {
