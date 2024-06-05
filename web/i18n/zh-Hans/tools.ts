@@ -106,6 +106,7 @@ const translation = {
     content: '我们找不到任何与您的搜索相匹配的工具。',
     reset: '重置搜索',
   },
+  modal: '模型',
   builtInPromptTitle: '提示词',
   toolRemoved: '工具已被移除',
   notAuthorized: '工具未授权',

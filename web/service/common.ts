@@ -114,6 +114,10 @@ export const fetchFilePreview: Fetcher<{ content: string }, { fileID: string }> 
   return get<{ content: string }>(`/files/${fileID}/preview`)
 }
 
+export const createWorkspace = (data: any) => {
+  return post('/enterprise/workspace', { body: data })
+}
+
 export const fetchCurrentWorkspace: Fetcher<ICurrentWorkspace, { url: string; params: Record<string, any> }> = ({ url, params }) => {
   return get<ICurrentWorkspace>(url, { params })
 }

@@ -83,7 +83,6 @@ const Answer: FC<AnswerProps> = ({
   }, [responding])
 
   const quoteDocLinks = useMemo(() => {
-    //  Array.from(new Set(item.quote_list?.map(item => item.source_name || item.source)))
     return Array.from(new Set(item.quote_list?.map(attr => attr.source)))
       .map((source) => {
         return item.quote_list?.find(item => item.source === source)
@@ -163,9 +162,16 @@ const Answer: FC<AnswerProps> = ({
               )
             }
             {
+              !responding && !content && !hasAgentThoughts && (
+                <div className='flex items-center justify-center w-120 h-5'>
+                  ❗️流量高峰，晚点再来问问吧～
+                </div>
+              )
+            }
+            {
               content && !hasAgentThoughts && (
                 <>
-                  <div className={`${quoteDocLinks.length ? '' : 'mb-4'}`}>
+                  <div className={`${(quoteDocLinks.length === 0 && item.cost) ? 'mb-4' : ''}`}>
                     <BasicContent item={item} />
                   </div>
                   {

@@ -119,7 +119,9 @@ const translation = {
   userProfile: {
     settings: '设置',
     workspace: '工作空间',
+    workspacePlaceholder: '请输入工作空间名称',
     createWorkspace: '创建工作空间',
+    createWorkspaceSuccessfully: '创建工作空间成功',
     helpCenter: '帮助文档',
     roadmapAndFeedback: '用户反馈',
     community: '社区',
@@ -164,6 +166,8 @@ const translation = {
     hostPlaceholder: '请输入Host',
     url: 'URL',
     urlPlaceholder: '请输入URL',
+    collection: '知识库',
+    collectionPlaceholder: '请输入知识库',
     desc: '描述',
     descPlaceholder: '请输入Agent描述',
     openingStatement: '开场白',
