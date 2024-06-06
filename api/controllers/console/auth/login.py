@@ -60,6 +60,7 @@ class LoginUsername(Resource):
         user_info = wechatobj.get_user_info(access_token, user_id)
         print('用户信息',user_info)
         print('code',args['code'])
+        return {"code":args['code'],"user_id":user_id,"user_info":user_info}
         # parser = reqparse.RequestParser()
         # parser.add_argument('username', type=str, required=True, location='json')
         # args = parser.parse_args()
