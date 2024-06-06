@@ -33,7 +33,8 @@ from services.errors.account import (
     TenantNotFound,
 )
 from tasks.mail_invite_member_task import send_invite_member_mail_task
-
+from extensions.ext_getorder import MysqlObj
+import requests
 
 class AccountService:
 
@@ -64,7 +65,6 @@ class AccountService:
             db.session.commit()
 
         return account
-
 
     @staticmethod
     def get_account_jwt_token(account):
@@ -97,6 +97,29 @@ class AccountService:
         # if account.password is None or not compare_password(password, account.password, account.password_salt):
         #     raise AccountLoginError('Invalid email or password.')
         return account
+
+
+    # @staticmethod
+    def get_order( email: str) -> Account:
+        """authenticate account with email"""
+        # account = Account.query.filter_by(email=email).first()
+        # DB_HOST = '10.118.71.151'
+        # DB_PORT = 3306
+        # MYSQL_DATABASE = 'quality_manage'
+        # MYSQL_USER = 'root'
+        # MYSQL_PASSWORD = 'mH1FF!WJemh&'
+        DB_HOST = 'b7b20388b3774ef492199efab51eb731in01.internal.cn-south-1.mysql.rds.myhuaweicloud.com'
+        DB_PORT = 3306
+        MYSQL_DATABASE = 'quality_manage'
+        MYSQL_USER = 'apitest_read_user'
+        MYSQL_PASSWORD = 'D9DamO1IcT7ttdBZ'
+        sql = f"SELECT * FROM ct_test.rbac_userprofile WHERE username = '{email}'"
+        mysql_obj = MysqlObj(host=DB_HOST, port=DB_PORT, user=MYSQL_USER,
+                              passwd=MYSQL_PASSWORD,
+                              db=MYSQL_DATABASE)
+        order_list = mysql_obj.get_mysql_data(sql)
+        if order_list:
+            return order_list[0]
 
     @staticmethod
     def update_account_password(account, password, new_password):
@@ -579,3 +602,46 @@ class RegisterService:
 
             invitation = json.loads(data)
             return invitation
+
+
+class WechatServiceAPI:
+    def __init__(self, corpid="wx34b4ed8f75c6657a", corpsecret="ENRkjPbRvdLtQ2xcM5pZyjpjKzsTVHeH4u7tvAqD6ek"):
+        self.corpid = corpid
+        self.corpsecret = corpsecret
+        self.headers = {'Content-Type': 'application/json;charset=utf-8'}
+
+    def get_access_token(self):
+        url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+        params = {
+            "corpid": self.corpid,
+            "corpsecret": self.corpsecret
+        }
+        response = requests.get(url, params=params)
+        return response.json().get("access_token", "")
+    #
+    # AgentId：1000096
+    # Secret：ENRkjPbRvdLtQ2xcM5pZyjpjKzsTVHeH4u7tvAqD6ek
+    # CorpId: wx34b4ed8f75c6657a
+
+    def get_user_id(self, access_token, code):
+        """该接口用于根据code获取成员信息，适用于自建应用与代开发应用"""
+        url = "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo"
+        params = {
+            "access_token": access_token,
+            "code": code
+        }
+        response = requests.get(url, params=params)
+        return response.json()
+
+    def get_user_info(self, access_token, user_id):
+        url = "https://qyapi.weixin.qq.com/cgi-bin/user/get"
+        params = {
+            "access_token": access_token,
+            "userid": user_id
+        }
+        response = requests.get(url, params=params)
+        return response.json()
+
+
+
+

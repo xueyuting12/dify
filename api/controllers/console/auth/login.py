@@ -11,10 +11,10 @@ from controllers.console.setup import setup_required, get_setup_status, setup
 from core.model_runtime.errors.validate import CredentialsValidateFailedError
 from libs.helper import email
 from libs.password import valid_password
-from services.account_service import AccountService, TenantService, RegisterService
+from services.account_service import AccountService, TenantService, RegisterService, WechatServiceAPI
 from services.model_provider_service import ModelProviderService
-
-
+from libs.passport import PassportService
+from datetime import datetime, timedelta, timezone
 # class LoginApi(Resource):
 #     """Resource for user login."""
 #
@@ -44,6 +44,43 @@ from services.model_provider_service import ModelProviderService
 #         return {'result': 'success', 'data': token}
 
 
+# 工号登录
+class LoginUsername(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('code', type=str, required=True, location='json')
+        args = parser.parse_args()
+        wechatobj = WechatServiceAPI()
+        access_token = wechatobj.get_access_token()
+        if not access_token:
+            return {"error": "access_token is missing"}, 401
+        print('access_token',access_token)
+        user_id = wechatobj.get_user_id(access_token, args['code'])
+        print('用户id',user_id)
+        user_info = wechatobj.get_user_info(access_token, user_id)
+        print('用户信息',user_info)
+        print('code',args['code'])
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('username', type=str, required=True, location='json')
+        # args = parser.parse_args()
+        # data = {"mail": f"{args['username']}@email.com"}
+        # # account1 = AccountService.authenticate(data['mail'],'')
+        # account = AccountService.get_order(args['username'])
+        #
+        # if not account:
+        #     return {'code': 'unauthorized'}, 401
+        # else:
+        #     payload = {
+        #         "user_id": account['id'],
+        #         "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
+        #         "iss": current_app.config['EDITION'],
+        #         "sub": 'Console API Passport',
+        #     }
+        #
+        #     token = PassportService().issue(payload)
+        #     return {'token': token}
+
+
 class LoginApi(Resource):
     """Resource for user login."""
 
@@ -60,12 +97,13 @@ class LoginApi(Resource):
         try:
             ldap_auth = LDAPBackend()
             data = ldap_auth.authenticate(username=args['username'], password=args['password'])
+            # data = {"mail": f"{args['username']}@email.com"}
             if not data:
                 return {'code': 'unauthorized', 'message': 'Invalid username or password'}, 401
         except services.errors.account.AccountLoginError:
             return {'code': 'unauthorized', 'message': 'Invalid email or password'}, 401
         account = AccountService.authenticate(data['mail'], args['password'])
-
+        print(account)
         is_create_model = False
         if not account:
             account = RegisterService.register(
@@ -192,3 +230,4 @@ class ResetPasswordApi(Resource):
 
 api.add_resource(LoginApi, '/login')
 api.add_resource(LogoutApi, '/logout')
+api.add_resource(LoginUsername, '/login_username')
