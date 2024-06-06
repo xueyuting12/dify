@@ -55,8 +55,14 @@ class LoginUsername(Resource):
         if not access_token:
             return {"error": "access_token is missing"}, 401
         print('参数',args['code'])
-        user_id = wechatobj.get_user_id(access_token, args['code'])
-        print('user_id',user_id,"user_id['userid']", user_id['userid'])
+        try:
+            user_id = wechatobj.get_user_id(access_token, args['code'])
+            print('user_id', user_id)
+            print("user_id['userid']", user_id['userid'])
+        except Exception as e:
+            # 捕获其他可能的异常
+            print(f"发生未预料到的错误：{e}")
+            raise e
         account = AccountService.get_order(user_id['userid'])
         print('account', account)
         #
@@ -68,7 +74,7 @@ class LoginUsername(Resource):
                 "sub": 'Console API Passport',
             }
             token = PassportService().issue(payload)
-            return {'token': token}
+            return {'token': token, 'user_id': user_id}
         else:
             return {'code': 'unauthorized'}, 401
 
