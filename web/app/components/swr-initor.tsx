@@ -4,6 +4,7 @@ import { SWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { weChatLogin } from '@/service/common'
 
 type SwrInitorProps = {
   children: ReactNode
@@ -19,33 +20,31 @@ const SwrInitor = ({
   const [init, setInit] = useState(false)
 
   const getChatUserToken = async (code: string) => {
-    console.log(code)
-    // const token = await weChatLogin(code)
-    // console.log(token)
-    // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
-    // router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-    // setInit(true)
+    const tempRes = await weChatLogin(code) as any
+    if (tempRes?.token) {
+      localStorage?.setItem('console_token', tempRes.token)
+      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+      setInit(true)
+    }
   }
 
   useEffect(() => {
-    console.log(1111, weChatCode)
     if (!(consoleToken || consoleTokenFromLocalStorage || weChatCode)) {
-      // router.replace('/signin')
-      // setInit(true)
+      router.replace('/signin')
+      setInit(true)
     }
-
-    if (consoleToken)
-      localStorage?.setItem('console_token', consoleToken!)
-      // router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-      // setInit(true)
-
-    if (consoleTokenFromLocalStorage)
-      console.log(222)
-
-    // setInit(true)
 
     if (weChatCode)
       getChatUserToken(weChatCode)
+
+    if (consoleToken) {
+      localStorage?.setItem('console_token', consoleToken!)
+      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+      setInit(true)
+    }
+
+    if (consoleTokenFromLocalStorage)
+      setInit(true)
 
     // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
     // localStorage?.setItem('chat_code', weChatCode)
