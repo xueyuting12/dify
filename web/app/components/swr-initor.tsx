@@ -38,8 +38,10 @@ const SwrInitor = ({
       setInit(true)
     }
 
-    if (weChatCode)
+    if (weChatCode) {
+      console.log(weChatCode)
       getChatUserToken(weChatCode)
+    }
 
     // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
     // localStorage?.setItem('chat_code', weChatCode)
