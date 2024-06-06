@@ -55,7 +55,7 @@ class LoginUsername(Resource):
         if not access_token:
             return {"error": "access_token is missing"}, 401
         user_id = wechatobj.get_user_id(access_token, args['code'])
-        account = AccountService.get_order(user_id['user_id'])
+        account = AccountService.get_order(user_id['userid'])
         #
         if account:
             if 'userid' in account:
