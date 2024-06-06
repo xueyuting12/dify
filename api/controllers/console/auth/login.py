@@ -57,26 +57,28 @@ class LoginUsername(Resource):
         print('参数',args['code'])
         try:
             user_id = wechatobj.get_user_id(access_token, args['code'])
+            print('user_id类型', type(user_id))
             print('user_id', user_id)
-            print("user_id['userid']", user_id['userid'])
+            # print("user_id['userid']", user_id['userid'])
         except Exception as e:
             # 捕获其他可能的异常
             print(f"发生未预料到的错误：{e}")
             raise e
-        account = AccountService.get_order(user_id['userid'])
-        print('account', account)
-        #
-        if account:
-            payload = {
-                "user_id": account['id'],
-                "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
-                "iss": current_app.config['EDITION'],
-                "sub": 'Console API Passport',
-            }
-            token = PassportService().issue(payload)
-            return {'token': token, 'user_id': user_id}
-        else:
-            return {'code': 'unauthorized'}, 401
+        return {'user_id': user_id, 'user_idtype': type(user_id), 'code': args['code']}
+        # account = AccountService.get_order(user_id['userid'])
+        # print('account', account)
+        # #
+        # if account:
+        #     payload = {
+        #         "user_id": account['id'],
+        #         "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
+        #         "iss": current_app.config['EDITION'],
+        #         "sub": 'Console API Passport',
+        #     }
+        #     token = PassportService().issue(payload)
+        #     return {'token': token, 'user_id': user_id}
+        # else:
+        #     return {'code': 'unauthorized'}, 401
 
 
 class LoginApi(Resource):
