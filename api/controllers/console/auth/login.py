@@ -54,32 +54,21 @@ class LoginUsername(Resource):
         access_token = wechatobj.get_access_token()
         if not access_token:
             return {"error": "access_token is missing"}, 401
-        print('access_token',access_token)
         user_id = wechatobj.get_user_id(access_token, args['code'])
-        print('用户id',user_id)
-        user_info = wechatobj.get_user_info(access_token, user_id)
-        print('用户信息',user_info)
-        print('code',args['code'])
-        return {"code":args['code'],"user_id":user_id,"user_info":user_info}
-        # parser = reqparse.RequestParser()
-        # parser.add_argument('username', type=str, required=True, location='json')
-        # args = parser.parse_args()
-        # data = {"mail": f"{args['username']}@email.com"}
-        # # account1 = AccountService.authenticate(data['mail'],'')
-        # account = AccountService.get_order(args['username'])
+        account = AccountService.get_order(user_id['userid'])
         #
-        # if not account:
-        #     return {'code': 'unauthorized'}, 401
-        # else:
-        #     payload = {
-        #         "user_id": account['id'],
-        #         "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
-        #         "iss": current_app.config['EDITION'],
-        #         "sub": 'Console API Passport',
-        #     }
-        #
-        #     token = PassportService().issue(payload)
-        #     return {'token': token}
+        if account:
+            if 'userid' in account:
+                payload = {
+                    "user_id": account['id'],
+                    "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
+                    "iss": current_app.config['EDITION'],
+                    "sub": 'Console API Passport',
+                }
+                token = PassportService().issue(payload)
+                return {'token': token}
+            else:
+                return {'code': 'unauthorized'}, 401
 
 
 class LoginApi(Resource):
