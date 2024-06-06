@@ -3,14 +3,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ChatItem from './chat-item'
 import type { IChatItem } from '@/service/chatTask'
+import { useManagerContext } from '@/context/manager-context'
+import { fetchChatList } from '@/service/chatTask'
 
-type IChatPlayback = {
-  fullList: IChatItem[]
+function generateUUID() {
+  const buf = new Uint32Array(4)
+  window.crypto.getRandomValues(buf)
+  let idx = -1
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    idx++
+    let r = (buf[idx >> 3] >> ((idx % 8) * 4)) & 15
+    r = r ^ (c === 'x' ? 0 : (c === 'y' ? 8 : 3))
+    return r.toString(16)
+  })
 }
 
-const ChatPlayback = ({
-  fullList,
-}: IChatPlayback) => {
+const ChatPlayback = () => {
+  const { currentGroup, setCurrentMessageId, setTaskUUId } = useManagerContext()
+
   const containerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
   const [displayList, setDisplayList] = useState<IChatItem[]>([])
@@ -41,22 +51,34 @@ const ChatPlayback = ({
     }
   })
 
-  useEffect(() => {
-    let count = 0
+  const startChat = async () => {
+    if (!currentGroup || !currentGroup.group_id || !currentGroup.group_name)
+      return
+    const uuid = generateUUID()
+    setTaskUUId(uuid)
     setDisplayList([])
-    if (fullList.length) {
+    // console.log('开始任务执行...')
+    const fullChatList = await fetchChatList(currentGroup)
+    let count = 0
+    if (fullChatList.length) {
       const intervalId = setInterval(() => {
-        setDisplayList(prevCounter => [...prevCounter, fullList[count]])
-        count++
-
         // 判断是否达到设定的循环次数
-        if (count >= fullList.length) {
+        if (count >= fullChatList.length) {
           clearInterval(intervalId)
-          console.log('任务执行完毕')
+          // console.log('任务执行完毕')
+          return
         }
+        const curChat = fullChatList[count]
+        setDisplayList(prevList => [...prevList, curChat])
+        setCurrentMessageId(curChat.msgId)
+        count++
       }, 1000)
     }
-  }, [fullList])
+  }
+
+  useEffect(() => {
+    startChat()
+  }, [currentGroup])
 
   return (
     <div

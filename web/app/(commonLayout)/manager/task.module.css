@@ -1,0 +1,49 @@
+.waitingAnimation {
+  animation: blink 1s linear infinite alternate;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.11;
+  }
+}
+
+.replaceAnimation {
+  animation: blink 1s linear 1 alternate;
+}
+@keyframes slideInRight {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 定义动画 */
+@keyframes lightSweep {
+  0% {
+    background-position-x: -100%;
+    opacity: 1;
+  }
+  100% {
+    background-position-x: 100%;
+    opacity: 0;
+  }
+}
+
+/* 光柱背景样式 */
+.sweep {
+  /* width: 100%; 根据需要调整宽度 */
+  /* height: 100px; 根据需要调整高度 */
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.8) 10%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%; /* 控制光柱的宽度和重复 */
+  animation: lightSweep 2s ease-in-out infinite;
+  opacity: 1; /* 确保元素初始时可见 */
+}
+

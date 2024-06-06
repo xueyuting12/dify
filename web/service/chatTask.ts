@@ -8,11 +8,12 @@ export type IGroupProps = {
 }
 
 export type IGroupPropsUnder = {
-  group_name: string
-  group_id: string
+  group_name?: string
+  group_id?: string
 }
 
 export type IChatItem = {
+  msgId: string
   groupId?: string
   groupName?: string
   msgContent?: string
@@ -23,7 +24,7 @@ export type IChatItem = {
 }
 
 export type ITaskItem = {
-  taskId: number
+  task_id?: number
   groupId?: string
   groupName?: string
   taskType?: string
@@ -32,6 +33,8 @@ export type ITaskItem = {
   taskRemark?: string
   senderId?: string
   senderName?: string
+  msgId?: string
+  status?: 'waiting' | 'complete' | 'exist' | 'replace'
 }
 
 export type IUpdateCurrentTask = {
@@ -60,7 +63,7 @@ export const fetchTaskList = (groupData: IGroupPropsUnder) => {
  * @returns
  */
 export const fetchCurrentTask = (content: IUpdateCurrentTask) => {
-  return post(`${originUrl}ai-ass/api/v1/msg/replay`, { body: { content } })
+  return post(`${originUrl}ai-ass/api/v1/msg/replay`, { body: { ...content } })
 }
 
 export const fetchCurrentLLM = () => {

@@ -8,7 +8,7 @@ import HeaderBillingBtn from '../billing/header-billing-btn'
 import AccountDropdown from './account-dropdown'
 import AppNav from './app-nav'
 import DatasetNav from './dataset-nav'
-import ManagerNav from './manager-nav'
+// import ManagerNav from './manager-nav'
 import EnvNav from './env-nav'
 import ExploreNav from './explore-nav'
 import ToolsNav from './tools-nav'
@@ -73,7 +73,7 @@ const Header = () => {
           {isCurrentWorkspaceManager && <DatasetNav />}
           <ToolsNav className={navClassName} />
           <ScheduleNav className={navClassName}/>
-          <ManagerNav className={navClassName} />
+          {/* <ManagerNav className={navClassName} /> */}
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>

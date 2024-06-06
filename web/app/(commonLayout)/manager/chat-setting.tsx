@@ -8,11 +8,9 @@ import { SimpleSelect } from '@/app/components/base/select'
 import Button from '@/app/components/base/button'
 import { fetchCurrentLLM, fetchLLMList, fetchPrompt, updateLLM, updatePrompt } from '@/service/chatTask'
 import Drawer from '@/app/components/base/drawer-plus'
+import { useManagerContext } from '@/context/manager-context'
 
 const intervalTimeList = ['1', '2', '3', '4', '5', '6', '7', '8']
-// const intervalTimeList = ['2', '4', '6', '8', '10']
-let isLLMChange = false
-let isPromptChange = false
 
 type CharSetting = {
   showDrawer: boolean
@@ -24,10 +22,12 @@ const ChatSetting = ({
   onClose,
 }: CharSetting) => {
   const { t } = useTranslation()
+  const { model, prompt, setModel, setPrompt } = useManagerContext()
+
   const locInterval = localStorage.getItem('CHAT_TASK_INTERVAL')
   const [llmList, setLLMList] = useState<Item[]>([])
   const [llm, setllm] = useState('')
-  const [prompt, setPrompt] = useState('')
+  const [newPrompt, setNewPrompt] = useState('')
   const [intervalTime, setIntervalTime] = useState<string>()
 
   const getInitInfo = async () => {
@@ -38,8 +38,10 @@ const ChatSetting = ({
     })))
     const tempLLM = await fetchCurrentLLM()
     setllm(tempLLM)
+    setModel(tempLLM)
     const tempPrompt = await fetchPrompt()
     setPrompt(tempPrompt)
+    setNewPrompt(tempPrompt)
   }
 
   useEffect(() => {
@@ -54,24 +56,21 @@ const ChatSetting = ({
   }, [])
 
   const handleValueChange = (key: string, value: string) => {
-    if (key === 'llm') {
-      isLLMChange = true
+    if (key === 'llm')
       setllm(value)
-    }
-    if (key === 'prompt') {
-      isPromptChange = true
-      setPrompt(value)
-    }
+
+    if (key === 'prompt')
+      setNewPrompt(value)
   }
 
   const handleSave = async () => {
-    if (isLLMChange) {
+    if (model !== llm) {
       await updateLLM(llm)
-      isLLMChange = false
+      setModel(llm)
     }
-    if (isPromptChange) {
+    if (prompt !== newPrompt) {
       await updatePrompt(prompt)
-      isPromptChange = false
+      setPrompt(newPrompt)
     }
     if (locInterval !== intervalTime)
       localStorage.setItem('CHAT_TASK_INTERVAL', String(intervalTime))
@@ -97,7 +96,7 @@ const ChatSetting = ({
               {t('tools.builtInPromptTitle')}
             </div>
             <TextArea
-              value={prompt}
+              value={newPrompt}
               onChange={e => handleValueChange('prompt', e.target.value)}
               className='mt-1 block w-full leading-5 max-h-none outline-none appearance-none resize-none bg-gray-50 rounded-lg border text-sm text-gray-700'
               autoFocus
