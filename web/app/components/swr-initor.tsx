@@ -21,8 +21,9 @@ const SwrInitor = ({
 
   const getChatUserToken = async (code: string) => {
     const token = await weChatLogin(code)
-    localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
-    router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+    console.log(token)
+    // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
+    // router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
   }
 
   useEffect(() => {
@@ -34,11 +35,12 @@ const SwrInitor = ({
       router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
     }
 
-    if (weChatCode) {
+    if (weChatCode)
+      getChatUserToken(weChatCode)
       // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
       // localStorage?.setItem('chat_code', weChatCode)
       // router.replace(`/explore/apps?code=${weChatCode}`, { forceOptimisticNavigation: false } as any)
-    }
+
     setInit(true)
   }, [])
 
