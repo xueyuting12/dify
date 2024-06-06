@@ -4,7 +4,6 @@ import { SWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { weChatLogin } from '@/service/common'
 
 type SwrInitorProps = {
   children: ReactNode
@@ -21,8 +20,8 @@ const SwrInitor = ({
 
   const getChatUserToken = async (code: string) => {
     console.log(code)
-    const token = await weChatLogin(code)
-    console.log(token)
+    // const token = await weChatLogin(code)
+    // console.log(token)
     // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
     // router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
     // setInit(true)
@@ -62,7 +61,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : null
+    : <div>122</div>
 }
 
 export default SwrInitor
