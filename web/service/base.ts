@@ -358,8 +358,7 @@ const baseFetch = <T>(
                   else if (data.code === 'not_setup' && IS_CE_EDITION)
                     globalThis.location.href = `${globalThis.location.origin}/install`
                   else if (location.pathname !== '/signin' || !IS_CE_EDITION)
-                    // globalThis.location.href = loginUrl
-                    console.log(123)
+                    globalThis.location.href = loginUrl
                   else if (!silent)
                     Toast.notify({ type: 'error', message: data.message })
                 }).catch(() => {
