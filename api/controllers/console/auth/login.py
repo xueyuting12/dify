@@ -59,8 +59,6 @@ class LoginUsername(Resource):
         #
         if account:
             if 'userid' in account:
-                return {'code': 'unauthorized'}, 401
-            else:
                 payload = {
                     "user_id": account['id'],
                     "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
@@ -69,6 +67,8 @@ class LoginUsername(Resource):
                 }
                 token = PassportService().issue(payload)
                 return {'token': token}
+            else:
+                return {'code': 'unauthorized'}, 401
 
 
 class LoginApi(Resource):
