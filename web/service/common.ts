@@ -39,6 +39,10 @@ export const login: Fetcher<CommonResponse & { data: string }, { url: string; bo
   return post(url, { body }) as Promise<CommonResponse & { data: string }>
 }
 
+export const weChatLogin = (code: string) => {
+  return post('login_username', { body: { code } })
+}
+
 export const setup: Fetcher<CommonResponse, { body: Record<string, any> }> = ({ body }) => {
   return post<CommonResponse>('/setup', { body })
 }
