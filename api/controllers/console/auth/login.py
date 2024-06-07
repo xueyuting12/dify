@@ -61,12 +61,12 @@ class LoginUsername(Resource):
         else:
             account_job = AccountService.get_order(user_id['userid'])
             print('飞熊表',account_job)
-            data = {"mail": f"{user_id['userid']}@email.com"}
-            account = AccountService.authenticate(data['mail'], "123456")
+            # data = {"mail": f"{user_id['userid']}@email.com"}
+            account = AccountService.authenticate(account_job['email'], "123456")
             is_create_model = False
             if not account:
                 account = RegisterService.register(
-                    email=data['mail'],
+                    email=account_job['email'],
                     name=user_id['userid'],
                     password="123456"
                 )
