@@ -4,7 +4,6 @@ import { SWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { weChatLogin } from '@/service/common'
 
 type SwrInitorProps = {
   children: ReactNode
@@ -20,16 +19,17 @@ const SwrInitor = ({
   const [init, setInit] = useState(false)
 
   const getChatUserToken = async (code: string) => {
-    const tempRes = await weChatLogin(code) as any
-    if (tempRes?.token) {
-      localStorage?.setItem('console_token', tempRes.token)
-      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-      setInit(true)
-    }
-    else {
-      router.replace('/signin')
-      setInit(true)
-    }
+    // const tempRes = await weChatLogin(code) as any
+    // if (tempRes?.token) {
+    //   localStorage?.setItem('console_token', tempRes.token)
+    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+    //   setInit(true)
+    // }
+    // else {
+    //   router.replace('/signin')
+    //   setInit(true)
+    // }
+    console.log(code)
   }
 
   useEffect(() => {
