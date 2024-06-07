@@ -4,6 +4,7 @@ import { SWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { weChatLogin } from '@/service/common'
 
 type SwrInitorProps = {
   children: ReactNode
@@ -19,13 +20,16 @@ const SwrInitor = ({
   const [init, setInit] = useState(false)
 
   const getChatUserToken = async (code: string) => {
-    // const tempRes = await weChatLogin(code) as any
-    // if (tempRes?.token) {
-    //   localStorage?.setItem('console_token', tempRes.token)
-    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-    //   setInit(true)
-    // }
-    console.log(code)
+    const tempRes = await weChatLogin(code) as any
+    if (tempRes?.token) {
+      localStorage?.setItem('console_token', tempRes.token)
+      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+      setInit(true)
+    }
+    else {
+      router.replace('/signin')
+      setInit(true)
+    }
   }
 
   useEffect(() => {
@@ -34,17 +38,17 @@ const SwrInitor = ({
       setInit(true)
     }
 
+    if (consoleToken) {
+      localStorage?.setItem('console_token', consoleToken!)
+      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+      setInit(true)
+    }
+
+    if (consoleTokenFromLocalStorage)
+      setInit(true)
+
     if (weChatCode)
       getChatUserToken(weChatCode)
-
-    // if (consoleToken) {
-    //   localStorage?.setItem('console_token', consoleToken!)
-    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-    //   setInit(true)
-    // }
-
-    // if (consoleTokenFromLocalStorage)
-    //   setInit(true)
 
     // localStorage?.setItem('console_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTU2ZmRkN2UtODYxMi00YzIyLWIzYmUtOTMyNmY1MDkxNGMxIiwiZXhwIjoxNzIwMjM1MzYxLCJpc3MiOiJTRUxGX0hPU1RFRCIsInN1YiI6IkNvbnNvbGUgQVBJIFBhc3Nwb3J0In0.bkP8OAXtmR-0nBgCmMi3m08gKxPTpMynvVhbzfijwbk')
     // localStorage?.setItem('chat_code', weChatCode)
@@ -60,7 +64,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : <div>122</div>
+    : null
 }
 
 export default SwrInitor
