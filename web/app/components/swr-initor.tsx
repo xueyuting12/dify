@@ -18,18 +18,20 @@ const SwrInitor = ({
   const consoleToken = searchParams.get('console_token')
   const consoleTokenFromLocalStorage = localStorage?.getItem('console_token')
   const [init, setInit] = useState(false)
+  const [token, setToken] = useState<any>({})
 
   const getChatUserToken = async (code: string) => {
     const tempRes = await weChatLogin(code) as any
-    if (tempRes?.token) {
-      localStorage?.setItem('console_token', tempRes.token)
-      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-      setInit(true)
-    }
-    else {
-      router.replace('/signin')
-      setInit(true)
-    }
+    setToken(tempRes)
+    // if (tempRes?.token) {
+    //   localStorage?.setItem('console_token', tempRes.token)
+    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+    //   setInit(true)
+    // }
+    // else {
+    //   router.replace('/signin')
+    //   setInit(true)
+    // }
     console.log(code)
   }
 
@@ -39,14 +41,14 @@ const SwrInitor = ({
       setInit(true)
     }
 
-    if (consoleToken) {
-      localStorage?.setItem('console_token', consoleToken!)
-      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-      setInit(true)
-    }
+    // if (consoleToken) {
+    //   localStorage?.setItem('console_token', consoleToken!)
+    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+    //   setInit(true)
+    // }
 
-    if (consoleTokenFromLocalStorage)
-      setInit(true)
+    // if (consoleTokenFromLocalStorage)
+    //   setInit(true)
 
     if (weChatCode)
       getChatUserToken(weChatCode)
@@ -65,7 +67,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : <div>123</div>
+    : <div>{JSON.parse(token)}</div>
 }
 
 export default SwrInitor
