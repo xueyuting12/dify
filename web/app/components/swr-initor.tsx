@@ -23,7 +23,7 @@ const SwrInitor = ({
   const getChatUserToken = async (code: string) => {
     const tempRes = await weChatLogin(code) as any
     if (tempRes?.data) {
-      localStorage?.setItem('console_token', tempRes.token)
+      localStorage?.setItem('console_token', tempRes.data)
       router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
       setInit(true)
     }
