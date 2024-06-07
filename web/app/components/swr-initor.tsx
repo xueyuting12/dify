@@ -67,7 +67,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : <div>{JSON.parse(token)}</div>
+    : <div>{JSON.stringify(token)}</div>
 }
 
 export default SwrInitor
