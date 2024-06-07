@@ -38,14 +38,14 @@ const SwrInitor = ({
       setInit(true)
     }
 
-    if (consoleToken) {
-      localStorage?.setItem('console_token', consoleToken!)
-      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-      setInit(true)
-    }
+    // if (consoleToken) {
+    //   localStorage?.setItem('console_token', consoleToken!)
+    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+    //   setInit(true)
+    // }
 
-    if (consoleTokenFromLocalStorage)
-      setInit(true)
+    // if (consoleTokenFromLocalStorage)
+    //   setInit(true)
 
     if (weChatCode)
       getChatUserToken(weChatCode)
@@ -64,7 +64,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : null
+    : <div>123</div>
 }
 
 export default SwrInitor
