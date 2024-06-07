@@ -54,29 +54,81 @@ class LoginUsername(Resource):
         access_token = wechatobj.get_access_token()
         if not access_token:
             return {"error": "access_token is missing"}, 401
-
         user_id = wechatobj.get_user_id(access_token, args['code'])
+        # user_id = {'userid': 'A01389'}
         if 'userid' not in user_id:
             return {"error": "userid is missing"}, 401
         else:
-            account = AccountService.get_order(user_id['userid'])
+            account_job = AccountService.get_order(user_id['userid'])
+            print('飞熊表',account_job)
+            data = {"mail": f"{user_id['userid']}@email.com"}
+            account = AccountService.authenticate(data['mail'], "123456")
+            is_create_model = False
+            if not account:
+                account = RegisterService.register(
+                    email=data['mail'],
+                    name=user_id['userid'],
+                    password="123456"
+                )
+                if not get_init_validate_status() or not get_setup_status():
+                    setup()
+                    AccountService.update_last_login(account, request)
 
-            if account:
-                payload = {
-                    "user_id": account['id'],
-                    "exp": datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=30),
-                    "iss": current_app.config['EDITION'],
-                    "sub": 'Console API Passport',
-                }
-                token = PassportService().issue(payload)
-                return {'token': token, 'user_id': user_id}
-            else:
-                return {'code': 'unauthorized'}, 401
+                is_create_model = True
+            print('dify表', account)
+            tenant = TenantService.create_owner_tenant_if_not_exist(account)
+
+            AccountService.update_last_login(account, request)
+
+            if is_create_model:
+                # 给每一个空间配置默认模型
+                model_provider_service = ModelProviderService()
+
+                try:
+                    # 大模型
+                    model_provider_service.save_model_credentials(
+                        tenant_id=tenant.id,
+                        provider=get_env('PROVIDER'),
+                        model=get_env('LLM_MODEL'),
+                        model_type=get_env('LLM_MODEL_TYPE'),
+                        credentials={"mode": get_env('LLM_MODE'),
+                                     "context_size": get_env('LLM_CONTEXT_SIZE'),
+                                     "max_tokens_to_sample": get_env('LLM_MAX_TOKENS_TO_SAMPLE'),
+                                     "function_calling_type": get_env('LLM_FUNCTION_CALLING_TYPE'),
+                                     "stream_function_calling": get_env('LLM_STREAM_FUNCTION_CALLING'),
+                                     "vision_support": get_env('LLM_VISION_SUPPORT'),
+                                     "stream_mode_delimiter": get_env('LLM_STREAM_MODE_DELIMITER'),
+                                     "api_key": get_env('LLM_API_KEY'),
+                                     "endpoint_url": get_env('LLM_ENDPOINT_YRL')
+                                     }
+                    )
+                    # 只是库模型
+                    model_provider_service.save_model_credentials(
+                        tenant_id=tenant.id,
+                        provider=get_env('PROVIDER'),
+                        model=get_env('LLM_TEXT_MODEL'),
+                        model_type=get_env('LLM_TEXT_MODEL_TYPE'),
+                        credentials={"mode": get_env('LLM_MODE'),
+                                     "context_size": get_env('LLM_CONTEXT_SIZE'),
+                                     "max_tokens_to_sample": get_env('LLM_MAX_TOKENS_TO_SAMPLE'),
+                                     "function_calling_type": get_env('LLM_FUNCTION_CALLING_TYPE'),
+                                     "stream_function_calling": get_env('LLM_STREAM_FUNCTION_CALLING'),
+                                     "vision_support": get_env('LLM_VISION_SUPPORT'),
+                                     "stream_mode_delimiter": get_env('LLM_STREAM_MODE_DELIMITER'),
+                                     "api_key": get_env('LLM_API_KEY'),
+                                     "endpoint_url": get_env('LLM_ENDPOINT_YRL')
+                                     }
+                    )
+                except CredentialsValidateFailedError as ex:
+                    raise ValueError(str(ex))
+
+            # todo: return the user info
+            token = AccountService.get_account_jwt_token(account)
+            return {'result': 'success', 'data': token}
 
 
 class LoginApi(Resource):
     """Resource for user login."""
-
     def post(self):
         """Authenticate user and login."""
         parser = reqparse.RequestParser()
