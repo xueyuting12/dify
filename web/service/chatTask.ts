@@ -24,7 +24,7 @@ export type IChatItem = {
 }
 
 export type ITaskItem = {
-  task_id?: number
+  task_id?: number | string
   groupId?: string
   groupName?: string
   taskType?: string
@@ -64,6 +64,14 @@ export const fetchTaskList = (groupData: IGroupPropsUnder) => {
  */
 export const fetchCurrentTask = (content: IUpdateCurrentTask) => {
   return post(`${originUrl}ai-ass/api/v1/msg/replay`, { body: { ...content } })
+}
+
+export const fetchTaskExec = (content: any) => {
+  return post(`${originUrl}api/v1/chat/inquiry`, { body: { ...content } })
+}
+
+export const fetchExecResponse = (conversationId: string) => {
+  return post(`${originUrl}api/v1/inquiry/response`, { body: { conversationId } })
 }
 
 export const fetchCurrentLLM = () => {

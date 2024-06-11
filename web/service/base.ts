@@ -493,8 +493,17 @@ export const ssePost = (
 
   getAbortController?.(abortController)
 
+  // const urlPrefix = isPublicAPI ? PUBLIC_API_PREFIX : API_PREFIX
+  // const urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
   const urlPrefix = isPublicAPI ? PUBLIC_API_PREFIX : API_PREFIX
-  const urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
+  let urlWithPrefix = ''
+  if (isValidURL(url)) {
+    urlWithPrefix = url
+    options.credentials = 'omit'
+  }
+  else {
+    urlWithPrefix = `${urlPrefix}${url.startsWith('/') ? url : `/${url}`}`
+  }
 
   const { body } = options
   if (body)
