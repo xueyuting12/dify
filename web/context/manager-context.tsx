@@ -14,6 +14,8 @@ export type ManagerContextProps = {
   setPrompt: (str: string) => void
   taskUUId: string
   setTaskUUId: (str: string) => void
+  execList: any[]
+  setExecList: (list: any[]) => void
 }
 
 export const ManagerContext = createContext<ManagerContextProps>({
@@ -27,6 +29,8 @@ export const ManagerContext = createContext<ManagerContextProps>({
   setPrompt: () => {},
   taskUUId: '',
   setTaskUUId: () => {},
+  execList: [],
+  setExecList: () => {},
 })
 
 export const useManagerContext = () => useContext(ManagerContext)

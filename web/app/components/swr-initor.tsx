@@ -18,7 +18,7 @@ const SwrInitor = ({
   const consoleToken = searchParams.get('console_token')
   const consoleTokenFromLocalStorage = localStorage?.getItem('console_token')
   const [init, setInit] = useState(false)
-  // const [token, setToken] = useState('')
+  // const [token, setToken] = useState({})
 
   const getChatUserToken = async (code: string) => {
     const tempRes = await weChatLogin(code) as any

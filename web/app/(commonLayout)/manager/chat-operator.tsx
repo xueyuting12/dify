@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { DatePicker } from 'antd'
 import ChatSetting from './chat-setting'
 import { SimpleSelect } from '@/app/components/base/select'
 import Button from '@/app/components/base/button'
+import DatePicker from '@/app/components/base/date-picker'
 import { useManagerContext } from '@/context/manager-context'
 import type { IGroupProps } from '@/service/chatTask'
 import { fetchChatGroup } from '@/service/chatTask'
 import type { Item } from '@/app/components/base/select'
 
 const ChatOperator = () => {
-  const { RangePicker } = DatePicker
   const { setCurrentGroup } = useManagerContext()
 
   const [groupList, setGroupList] = useState<Item[]>([])
@@ -53,15 +52,17 @@ const ChatOperator = () => {
             onSelect={onGroupChange}
           />
         </div>
-        <RangePicker
+        <div>
+          <DatePicker />
+        </div>
+        {/* <RangePicker
           size='small'
           showTime={{ format: 'HH:mm' }}
           format="YYYY-MM-DD HH:mm"
           onChange={(value, dateString) => {
-            console.log('Selected Time: ', value)
-            console.log('Formatted Selected Time: ', dateString)
+            console.log(value, dateString)
           }}
-          onOk={onOk}/>
+          onOk={onOk}/> */}
       </div>
       <Button
         onClick={() => { setOpenSettingDrawer(true) } }
