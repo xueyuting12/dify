@@ -18,20 +18,19 @@ const SwrInitor = ({
   const consoleToken = searchParams.get('console_token')
   const consoleTokenFromLocalStorage = localStorage?.getItem('console_token')
   const [init, setInit] = useState(false)
-  const [token, setToken] = useState({})
+  // const [token, setToken] = useState({})
 
   const getChatUserToken = async (code: string) => {
     const tempRes = await weChatLogin(code) as any
-    setToken(tempRes)
-    // if (tempRes?.data) {
-    //   localStorage?.setItem('console_token', tempRes.data)
-    //   router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
-    //   setInit(true)
-    // }
-    // else {
-    //   router.replace('/signin')
-    //   setInit(true)
-    // }
+    if (tempRes?.data) {
+      localStorage?.setItem('console_token', tempRes.data)
+      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
+      setInit(true)
+    }
+    else {
+      router.replace('/signin')
+      setInit(true)
+    }
   }
 
   useEffect(() => {
@@ -66,7 +65,7 @@ const SwrInitor = ({
         {children}
       </SWRConfig>
     )
-    : <div>{JSON.stringify(token)}</div>
+    : null
 }
 
 export default SwrInitor
