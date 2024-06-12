@@ -7,16 +7,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Chat, ChatActive } from '../../base/icons/src/public/header-nav/chatTask'
 
-type ChatTaskNavProps = {
+type ManagerNavProps = {
   className?: string
 }
-const ChatTaskNav = ({ className }: ChatTaskNavProps) => {
+const ManagerNav = ({ className }: ManagerNavProps) => {
   const { t } = useTranslation()
   const selectedSegment = useSelectedLayoutSegment()
-  const actived = selectedSegment === 'chat-task'
+  const actived = selectedSegment === 'manager'
 
   return (
-    <Link href="/chat-task" className={classNames(
+    <Link href="/manager" className={classNames(
       className, 'group',
       actived && 'bg-white shadow-md',
       actived ? 'text-primary-600' : 'text-gray-500 hover:bg-gray-200',
@@ -31,4 +31,4 @@ const ChatTaskNav = ({ className }: ChatTaskNavProps) => {
   )
 }
 
-export default ChatTaskNav
+export default ManagerNav

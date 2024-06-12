@@ -8,21 +8,23 @@ export type IGroupProps = {
 }
 
 export type IGroupPropsUnder = {
-  group_name: string
-  group_id: string
+  group_name?: string
+  group_id?: string
 }
 
 export type IChatItem = {
+  msgId: string
   groupId?: string
   groupName?: string
   msgContent?: string
   msgType?: 'JOIN_GROUP' | 'TEXT' | 'IMAGE' | 'VOICE' | 'SHARING' | 'VIDEO'
   senderId?: string
   senderName?: string
+  msgTime?: string
 }
 
 export type ITaskItem = {
-  taskId: number
+  task_id?: number
   groupId?: string
   groupName?: string
   taskType?: string
@@ -31,6 +33,17 @@ export type ITaskItem = {
   taskRemark?: string
   senderId?: string
   senderName?: string
+  msgId?: string
+  status?: 'waiting' | 'complete' | 'exist' | 'replace'
+}
+
+export type IUpdateCurrentTask = {
+  replay_id: string
+  msg_id: string
+  model: string
+  prompt: string
+  group_id: string
+  group_name: string
 }
 
 export const fetchChatGroup = () => {
@@ -43,6 +56,14 @@ export const fetchChatList = (groupData: IGroupPropsUnder) => {
 
 export const fetchTaskList = (groupData: IGroupPropsUnder) => {
   return post<ITaskItem[]>(`${originUrl}ai-ass/api/v1/msg/task/list`, { body: groupData })
+}
+/**
+ * 获取当前消息生成的Task
+ * @param content
+ * @returns
+ */
+export const fetchCurrentTask = (content: IUpdateCurrentTask) => {
+  return post(`${originUrl}ai-ass/api/v1/msg/replay`, { body: { ...content } })
 }
 
 export const fetchCurrentLLM = () => {
