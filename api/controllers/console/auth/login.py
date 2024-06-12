@@ -59,7 +59,9 @@ class LoginUsername(Resource):
         if 'userid' not in user_id:
             return {"error": "userid is missing"}, 401
         else:
-            account_job = AccountService.get_order(user_id['userid'])
+            user_info= wechatobj.get_user_info(access_token, user_id['userid'])
+            user_number = next((item for item in user_info['extattr']['attrs'] if item.get("name") == "工号"), None)
+            account_job = AccountService.get_order(user_number['value'])
             print('飞熊表',account_job)
             # data = {"mail": f"{user_id['userid']}@email.com"}
             account = AccountService.authenticate(account_job['email'], "123456")
