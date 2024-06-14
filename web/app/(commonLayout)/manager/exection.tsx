@@ -14,6 +14,7 @@ import { AnswerTriangle } from '@/app/components/base/icons/src/vender/solid/gen
 
 type ChatItemProps = {
   item: IChatItem
+  index: number
   answerIcon?: ReactNode
   responding?: boolean
   chatAnswerContainerInner?: string
@@ -70,7 +71,7 @@ const ChatItem: FC<ChatItemProps> = ({
         }
       </div>
       <div className='chat-answer-container grow w-0 ml-2' ref={containerRef}>
-        <div className='text-xs text-gray-400 mb-3'>{`${item.senderName}${item.msgTime ? ('('+item.msgTime+')' ) : ''}`}</div>
+        <div className='text-xs text-gray-400 mb-3'>{`${item.senderName}(${item.msgTime})`}</div>
         <div className={`group relative pr-10 ${chatAnswerContainerInner}`}>
           <AnswerTriangle className='absolute -left-2 top-0 w-2 h-3 text-gray-100' />
           <div

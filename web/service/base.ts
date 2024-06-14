@@ -143,7 +143,8 @@ const handleStream = (
       }
       buffer += decoder.decode(result.value, { stream: true })
       const lines = buffer.split('\n\n')
-      // console.log('lines', lines)
+      console.log('lines', lines)
+
       try {
         lines.forEach((message) => {
           if (message.startsWith('data: ')) { // check if it starts with data:
@@ -232,6 +233,15 @@ const handleStream = (
             }
             else if (bufferObj.event === 'text_replace') {
               onTextReplace?.(bufferObj as TextReplaceResponse)
+            }
+          }  else if (message.startsWith('event: content')) {
+            // 临时处理manager
+            try {
+              bufferObj = JSON.parse(message.substring(21)) as Record<string, any>
+              // console.log(bufferObj)
+              onData(unicodeToChar(bufferObj.content), isFirstMessage, { messageId: '' })
+            } catch (error) {
+              onData('', isFirstMessage, { messageId: '' })
             }
           }
         })

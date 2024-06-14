@@ -15,6 +15,7 @@ const App = () => {
   const [currentGroup, setCurrentGroup] = useState<IGroupPropsUnder | null>(null)
   const [taskUUId, setTaskUUId] = useState('')
   const [execList, setExecList] = useState<any[]>([])
+  const [ pointMessage, setPointMessage ] = useState('20')
 
   return (
     <ManagerContext.Provider value={{
@@ -30,6 +31,8 @@ const App = () => {
       setTaskUUId,
       execList,
       setExecList,
+      pointMessage,
+      setPointMessage
     }}>
       <div className='flex flex-col h-full m-4 overflow-hidden' >
         <div className='flex-none flex h-12 w-full mb-2 bg-white p-1'>
@@ -42,10 +45,8 @@ const App = () => {
           <div className='flex-none bg-white w-2/6 border overflow-hidden'>
             <ChatTask />
           </div>
-          <div className='flex-1 bg-gray-100 border ml-3 overflow-hidden'>
-            <div className='w-full h-full text-gray-600 text-sm text-center inline-block'>
-              <ChatExection />
-            </div>
+          <div className='flex-1 bg-white border ml-3 overflow-hidden'>
+            <ChatExection />
           </div>
         </div>
       </div>

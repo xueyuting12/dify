@@ -48,15 +48,17 @@ const TaskExecModal = ({
         }],
       },
     }, {
-      onCompleted: () => {
-        console.log('onCompleted')
-        notify({ type: 'success', message: t('common.actionMsg.submitSucceeded') })
+      onData: (msg: string) => {
         const tempList = new Array(...execList)
-        tempList.push(data?.task_id)
+        tempList.push({
+          conversition_id: data?.task_id as string,
+          new_msg: msg
+        })
         setExecList(tempList)
-        onCancel()
-      },
+      }
     })
+    notify({ type: 'success', message: t('common.actionMsg.submitSucceeded') })
+    onCancel()
   }
 
   return (

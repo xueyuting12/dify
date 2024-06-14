@@ -46,7 +46,6 @@ const SwrInitor = ({
     }
 
     if (consoleTokenFromLocalStorage)
-      router.replace('/explore/apps', { forceOptimisticNavigation: false } as any)
       setInit(true)
 
     if (weChatCode)

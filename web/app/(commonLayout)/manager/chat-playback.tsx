@@ -5,6 +5,7 @@ import ChatItem from './chat-item'
 import type { IChatItem } from '@/service/chatTask'
 import { useManagerContext } from '@/context/manager-context'
 import { fetchChatList } from '@/service/chatTask'
+import styles from './task.module.css'
 
 function generateUUID() {
   const buf = new Uint32Array(4)
@@ -19,7 +20,7 @@ function generateUUID() {
 }
 
 const ChatPlayback = () => {
-  const { currentGroup, setCurrentMessageId, setTaskUUId } = useManagerContext()
+  const { currentGroup, setCurrentMessageId, setTaskUUId, pointMessage } = useManagerContext()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
@@ -72,7 +73,7 @@ const ChatPlayback = () => {
         setDisplayList(prevList => [...prevList, curChat])
         setCurrentMessageId(curChat.msgId)
         count++
-      }, 1000)
+      }, 1500)
     }
   }
 
@@ -89,7 +90,11 @@ const ChatPlayback = () => {
           if (item.msgType === 'JOIN_GROUP')
             return <div key={index} className='w-full text-center text-xs text-gray-400 mb-3 mt-3'>{`${item.msgContent}加入群聊`}</div>
           else
-            return <ChatItem key={index} item={item} index={index} />
+            return (
+              <div className={`mb-6 ${pointMessage === item.msgId && styles.fadeOnce}`} id={item.msgId} >
+                <ChatItem key={index} item={item}  />
+              </div>
+            )
         })
         : null}
     </div>
