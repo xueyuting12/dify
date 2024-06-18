@@ -34,7 +34,7 @@ export type ITaskItem = {
   senderId?: string
   senderName?: string
   msgId?: string
-  status?: 'waiting' | 'complete' | 'exist' | 'replace'
+  status?: 'waiting' | 'complete' | 'updated'
 }
 
 export type IUpdateCurrentTask = {

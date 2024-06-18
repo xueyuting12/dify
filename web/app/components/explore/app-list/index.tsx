@@ -73,11 +73,26 @@ const Apps = ({
     ['apps/api-agent'],
     () => fetchAgentTypes().then((res) => {
       res.data.map((item: any) => {
+        let icon = ''
+        let icon_background = '#FFEAD5'
+        if (item.ai_agent_name.includes('共享仓')) {
+          icon = 'derelict_house_building'
+          icon_background = '#D5D9EB'
+        } else if (item.ai_agent_name.includes('商家')) {
+          icon = 'shopping_trolley'
+          icon_background = '#FEF7C3'
+        } else if (item.ai_agent_name.includes('运费') || item.ai_agent_name.includes('物流费')) {
+          icon = '🏃‍♂️'
+          icon_background = '#E6F4D7'
+        } else if (item.ai_agent_name.includes('售后')) {
+          icon = 'notebook_with_decorative_cover'
+          icon_background = '#E6F4D7'
+        }
         item.app = {
-          icon: '',
+          icon: icon,
           id: item.id,
           name: item.ai_agent_name,
-          icon_background: '#FFEAD5',
+          icon_background: icon_background,
           description: item.desc,
           mode: 'custom-agent',
         }

@@ -10,21 +10,10 @@ import { useManagerContext } from '@/context/manager-context'
 import { fetchCurrentTask } from '@/service/chatTask'
 
 const ChatTask = () => {
-  const { currentMessageId, model, prompt, currentGroup, taskUUId } = useManagerContext()
+  const { currentMessageId, model, prompt, currentGroup, taskUUId, setPointMessage } = useManagerContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
-  const [taskList, setTaskList] = useState<ITaskItem[]>([{
-    groupId: '@@5dae6bd1cc1e5de29116e69c64b175a599d0edb1bd96f44c79ef1e11d9c07a43',
-    groupName: '开思行兴配件沟通群',
-    msgId: '2349',
-    // replayId: "56f3b9b1-b86f-4812-c282-d1caa870c058",
-    taskName: 'INQUIRY',
-    taskRemark: '根据客户最新提供的信息，还需提供[配件名称]和[品质]信息以完成此任务。',
-    taskStatus: 'DOING',
-    taskType: 'INQUIRY',
-    task_id: '180',
-    status: 'complete',
-  }])
+  const [taskList, setTaskList] = useState<ITaskItem[]>([])
   const [showExecModal, setShowExecModal] = useState(false)
   const [curTask, setCurTask] = useState<ITaskItem>()
 
@@ -53,6 +42,13 @@ const ChatTask = () => {
   //     return () => container.removeEventListener('scroll', setUserScrolled)
   //   }
   // }, [])
+
+  const handleToMessage = (msgId: string) => {
+    setPointMessage(msgId)
+    setTimeout(() => {
+      setPointMessage('')
+    }, 1000)
+  }
 
   const handleTaskExec = (target: ITaskItem) => {
     setShowExecModal(true)
@@ -88,8 +84,8 @@ const ChatTask = () => {
           if (tempTask.task_id) {
             const existTaskIndex = nextList.findIndex(attr => attr.task_id === tempTask.task_id)
             if (existTaskIndex !== -1) {
-              nextList[existTaskIndex] = { status: 'replace', ...tempTask }
-              nextList[tempIndex] = { status: 'exist', ...tempTask }
+              nextList[existTaskIndex] = { status: 'updated', ...tempTask }
+              nextList[tempIndex] = { status: 'complete', ...tempTask }
             }
             else {
               nextList[tempIndex] = { status: 'complete', ...tempTask }
@@ -131,13 +127,14 @@ const ChatTask = () => {
         }
         else if (item.status === 'complete' && item.taskType !== 'unknown') {
           return (
-            <div key={item.msgId} className='rounded-2xl shadow-md p-3 mb-4' id={`taskcard-${item.msgId}`}>
+            <div key={`msg-${item.msgId}`} className='rounded-2xl shadow-md p-3 mb-4' id={`taskcard-${item.msgId}`}>
               <div className='flex mb-2'>
-                <div className='grow text-gray-800'>
-                  {`${item.taskType}任务`}
+                <div className='grow text-gray-700 underline underline-offset-2'>
+                  <a href={`#${item.msgId}`}>{`${item.taskType}任务`}</a>
                 </div>
                 <Button
                   type='primary'
+                  disabled={!item.task_id}
                   onClick={() => handleTaskExec(item)}
                   className='!h-8 !text-sm !font-medium'>
                   执行
@@ -145,38 +142,16 @@ const ChatTask = () => {
               </div>
               <Divider />
               <div>
-                <div className='border rounded-md border-purple-400 bg-purple-100 w-fit mb-2 px-2 py-1'>
-                  <div className='text-sm text-gray-800'>{`${item.taskStatus}-${item.msgId}`}</div>
+                <div
+                  className='border rounded-md border-purple-400 bg-purple-100 w-fit mb-2 px-2 py-1'>
+                  <div className='text-sm text-gray-800'>{`${item.taskStatus}`}</div>
                 </div>
               </div>
-              <div className='grow text-xs text-gray-600 mb-1'>{item.groupName}</div>
-              <div className='text-gray-600 text-sm'>
-                {item.taskRemark}
+              <div
+                onClick={() => item.msgId && handleToMessage(item.msgId)}
+                className='grow text-xs text-gray-600 underline underline-offset-2 mb-1'>
+                <a  href={`#${item.msgId}`}>{`${item.groupName}`}</a>
               </div>
-            </div>
-          )
-        }
-        else if (item.status === 'replace' && item.taskType !== 'unknown') {
-          return (
-            <div key={item.msgId} className='rounded-2xl shadow-md p-3 mb-4' id={`taskcard-${item.msgId}`}>
-              <div className='flex mb-2'>
-                <div className='grow text-gray-800'>
-                  {`${item.taskType}任务`}
-                </div>
-                <Button
-                  type='primary'
-                  onClick={() => handleTaskExec(item)}
-                  className='!h-8 !text-sm !font-medium'>
-                  执行
-                </Button>
-              </div>
-              <Divider />
-              <div>
-                <div className='border rounded-md border-purple-400 bg-purple-100 w-fit mb-2 px-2 py-1'>
-                  <div className='text-sm text-gray-800'>{`${item.taskStatus}-${item.msgId}`}</div>
-                </div>
-              </div>
-              <div className='grow text-xs text-gray-600 mb-1'>{item.groupName}</div>
               <div className='text-gray-600 text-sm'>
                 {item.taskRemark}
               </div>

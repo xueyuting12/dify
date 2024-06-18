@@ -37,13 +37,14 @@
   }
 }
 
-/* 光柱背景样式 */
-.sweep {
-  /* width: 100%; 根据需要调整宽度 */
-  /* height: 100px; 根据需要调整高度 */
-  background-image: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.8) 10%, rgba(255,255,255,0) 100%);
-  background-size: 200% 100%; /* 控制光柱的宽度和重复 */
-  animation: lightSweep 2s ease-in-out infinite;
-  opacity: 1; /* 确保元素初始时可见 */
+@keyframes backgroundFade {
+  0%, 40% { background-color: rgba(initial, 1); } /* 初始状态，完全透明度 */
+  41%, 50% { background-color: rgba(240, 240, 240, 0.5); } /* 渐变至半透明浅灰色 */
+  50%, 60% { background-color: rgba(240, 240, 240, 1); } /* 完全变为不透明浅灰色 */
+  71%, 100% { background-color: rgba(initial, 1); } /* 恢复到初始状态 */
+}
+
+.fadeOnce {
+  animation: backgroundFade 1s linear infinite;/* 动画持续时间为1秒，使用ease-out缓出效果 */
 }
 

@@ -3,6 +3,11 @@
 import { createContext, useContext } from 'use-context-selector'
 import type { IGroupPropsUnder } from '@/service/chatTask'
 
+type IExecListItem = {
+  conversition_id: string
+  new_msg: string
+}
+
 export type ManagerContextProps = {
   currentGroup: IGroupPropsUnder | null
   setCurrentGroup: (data: IGroupPropsUnder) => void
@@ -14,8 +19,11 @@ export type ManagerContextProps = {
   setPrompt: (str: string) => void
   taskUUId: string
   setTaskUUId: (str: string) => void
-  execList: any[]
-  setExecList: (list: any[]) => void
+  execList: IExecListItem[]
+  setExecList: (list: IExecListItem[]) => void
+  pointMessage: string
+  setPointMessage: (str: string) => void
+  // pointExection: ''
 }
 
 export const ManagerContext = createContext<ManagerContextProps>({
@@ -31,6 +39,8 @@ export const ManagerContext = createContext<ManagerContextProps>({
   setTaskUUId: () => {},
   execList: [],
   setExecList: () => {},
+  pointMessage: '',
+  setPointMessage: () => {},
 })
 
 export const useManagerContext = () => useContext(ManagerContext)

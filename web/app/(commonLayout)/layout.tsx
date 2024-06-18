@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import type { ReactNode } from 'react'
 import SwrInitor from '@/app/components/swr-initor'
@@ -8,8 +10,12 @@ import Header from '@/app/components/header'
 import { EventEmitterContextProvider } from '@/context/event-emitter'
 import { ProviderContextProvider } from '@/context/provider-context'
 import { ModalContextProvider } from '@/context/modal-context'
+import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const media = useBreakpoints()
+  const isMobile = media === MediaType.mobile
+
   return (
     <>
       <GA gaType={GaType.admin} />
@@ -18,9 +24,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <EventEmitterContextProvider>
             <ProviderContextProvider>
               <ModalContextProvider>
+                { !isMobile && 
                 <HeaderWrapper>
                   <Header />
-                </HeaderWrapper>
+                </HeaderWrapper> }
                 {children}
               </ModalContextProvider>
             </ProviderContextProvider>
@@ -31,8 +38,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const metadata = {
-  title: '纽带星云',
-}
+// export const metadata = {
+//   title: '纽带星云',
+// }
 
 export default Layout
