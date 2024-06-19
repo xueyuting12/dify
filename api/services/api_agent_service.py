@@ -1,7 +1,9 @@
 from flask_sqlalchemy.pagination import Pagination
-
 from extensions.ext_database import db
-from models.model import ApiAgentApp, ApiAgentRegister
+from models.model import App, AppModelConfig, ApiAgentApp, ApiAgentRegister
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import update
+import json
 
 
 class ApiAgentAppService:
@@ -67,3 +69,25 @@ class ApiAgentRegisterService:
         db.session.commit()
 
         return api_agent
+
+    @staticmethod
+    def change_agent_suggested_questions(args: dict):
+        # 编辑opening_statement  suggested_questions字段改为最新的
+        if args['suggested_questions']:
+            suggested_questions_value = json.loads(args['suggested_questions'])
+            api_agent_apps = ApiAgentApp.query.filter_by(api_agent_id=args['ai_agent_id']).all()
+            # 提取所有 api_agent_apps 的 app_id 列表
+            app_ids = [app.app_id for app in api_agent_apps]
+            # 使用提取的 app_id 列表在 App 表中查找匹配的记录
+            apps = App.query.filter(App.id.in_(app_ids)).all()
+            try:
+                for app in apps:
+                    suggested_questions_dict = suggested_questions_value
+                    for key, value in suggested_questions_dict.items():
+                        sql = (update(AppModelConfig).where(AppModelConfig.id == app.app_model_config_id)
+                               .values(opening_statement=key, suggested_questions=json.dumps(value)))
+                        db.session.execute(sql)
+                db.session.commit()
+            except SQLAlchemyError as e:
+                print(f"修改失败: {e}")
+                db.session.rollback()

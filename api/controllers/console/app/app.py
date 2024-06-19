@@ -327,6 +327,9 @@ class ApiAgentListApi(Resource):
 
         app = ApiAgentRegisterService.update_app(args)
 
+        # 打印  编辑时候把对应页面的suggestion的那两个给改了
+        ApiAgentRegisterService.change_agent_suggested_questions(args)
+
         return app, 200
 
 
